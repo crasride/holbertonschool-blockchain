@@ -19,6 +19,7 @@ The second main reason we use a hash is to save space. Imagine we have a Block w
 Now, why **SHA256** over another? The reason is simple: the SHA algorithms family is published by the **NIST** **(National Institute of Standards and Technology)**, which makes it the standard in the Industry. SHA1 is now considered broken (meaning generating collisions is technically possible). SHA256 is part of the SHA2 family, which as of today, has not been broken.
 
 The following video explains the hash algorithms:
+
 [![SHA Video](https://img.youtube.com/vi/b4b8ktEV4Bg/0.jpg)](https://www.youtube.com/watch?v=b4b8ktEV4Bg)
 
 
@@ -32,9 +33,11 @@ Let’s break this down, and see how it works …
 ## ECC - Asymmetric vs. Symmetric cryptography
 Public-key cryptography is another term for **asymmetric cryptography**. This term refers to a cryptographic system that uses pairs of keys. In such pair of keys, one is **public**, and one is **private**. A very known example of asymmetric algorithm is `RSA`.
 
-The following video explains the difference between symmetric and asymmetric encryption, and describes how asymmetric encryption solves [the key exchange problem](https://en.wikipedia.org/wiki/Key_exchange#The_key_exchange_problem):
+The following video explains the difference between symmetric and asymmetric encryption, and describes how asymmetric encryption solves[the key exchange problem](https://en.wikipedia.org/wiki/Key_exchange#The_key_exchange_problem):
+
 
 [![Asymmetric Encryption Video](https://img.youtube.com/vi/AQDCe585Lnc/0.jpg)](https://www.youtube.com/watch?v=AQDCe585Lnc)
+
 
 ## ECC - Explanation
 The following video from **Computerphile** explains the trapdoor algorithm in Elliptic Curves, and how it is size efficient:
