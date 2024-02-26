@@ -11,7 +11,7 @@ The goal of this series of projects is to build a basic `Blockchain/Cryptocurren
 Before even breaking down the data structure that we are going to use to build our Blockchain, we need to understand what a Blockchain is, and why it is considered to be “unbreakable”.
 
 <p align="center">
-<img width="" height="" src="../holbertonschool-blockchain/media/1.jpg">
+<img width="" height="" src="./media/1.jpg>
 </p>
 
 
@@ -28,7 +28,7 @@ Now what makes the Blockchain so secure? Well, first, let’s put it on the tabl
 Let’s put oursleves in the shoes of a hacker, willing to corrupt a blockchain, by altering its content.
 
 <p align="center">
-<img width="250" height="250" src="../holbertonschool-blockchain/media/2_files/100.gif">
+<img width="250" height="250" src="./media/2_files/100.gif">
 </p>
 
 What we want to do is simple: take a block and change the data stored in it.
