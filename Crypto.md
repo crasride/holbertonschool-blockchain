@@ -39,7 +39,6 @@ The following video explains the difference between symmetric and asymmetric enc
 ## ECC - Explanation
 The following video from **Computerphile** explains the trapdoor algorithm in Elliptic Curves, and how it is size efficient:
 
-https://www.youtube.com/watch?v=NF1pwjL9-DE&t=1s
 [![ECC Trapdoor Algorithm Video](https://img.youtube.com/vi/NF1pwjL9-DE/0.jpg)](https://www.youtube.com/watch?v=NF1pwjL9-DE)
 
 Another video that dives more in the Maths behind Elliptic Curves, and compares them to RSA. You are not required to understand the maths behind Elliptic Curves, but it is always good to have an idea of how things work behind the curtain:
