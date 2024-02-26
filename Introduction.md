@@ -11,7 +11,7 @@ The goal of this series of projects is to build a basic `Blockchain/Cryptocurren
 Before even breaking down the data structure that we are going to use to build our Blockchain, we need to understand what a Blockchain is, and why it is considered to be “unbreakable”.
 
 <p align="center">
-<img width="" height="" src="./media/1.jpg>
+<img width="" height="" src="./media/2_files/1.jpg">
 </p>
 
 
