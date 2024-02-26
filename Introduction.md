@@ -27,8 +27,8 @@ Now what makes the Blockchain so secure? Well, first, let’s put it on the tabl
 
 Let’s put oursleves in the shoes of a hacker, willing to corrupt a blockchain, by altering its content.
 
-<p align="center">
-<img width="250" height="250" src="./media/2_files/100.gif">
+<p align="left">
+<img width="300" height="250" src="./media/2_files/100.gif">
 </p>
 
 What we want to do is simple: take a block and change the data stored in it.
