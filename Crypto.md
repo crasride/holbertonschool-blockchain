@@ -19,9 +19,7 @@ The second main reason we use a hash is to save space. Imagine we have a Block w
 Now, why **SHA256** over another? The reason is simple: the SHA algorithms family is published by the **NIST** **(National Institute of Standards and Technology)**, which makes it the standard in the Industry. SHA1 is now considered broken (meaning generating collisions is technically possible). SHA256 is part of the SHA2 family, which as of today, has not been broken.
 
 The following video explains the hash algorithms:
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-    <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/b4b8ktEV4Bg" frameborder="0" allowfullscreen></iframe>
-</div>
+[![SHA Video](https://img.youtube.com/vi/b4b8ktEV4Bg/0.jpg)](https://www.youtube.com/watch?v=b4b8ktEV4Bg)
 
 
 ## ECDSA - Elliptic Curve Digital Signature Algorithm
@@ -36,22 +34,23 @@ Public-key cryptography is another term for **asymmetric cryptography**. This te
 
 The following video explains the difference between symmetric and asymmetric encryption, and describes how asymmetric encryption solves [the key exchange problem](https://en.wikipedia.org/wiki/Key_exchange#The_key_exchange_problem):
 
-https://www.youtube.com/watch?v=AQDCe585Lnc
-
+[![Asymmetric Encryption Video](https://img.youtube.com/vi/AQDCe585Lnc/0.jpg)](https://www.youtube.com/watch?v=AQDCe585Lnc)
 
 ## ECC - Explanation
 The following video from **Computerphile** explains the trapdoor algorithm in Elliptic Curves, and how it is size efficient:
 
 https://www.youtube.com/watch?v=NF1pwjL9-DE&t=1s
+[![ECC Trapdoor Algorithm Video](https://img.youtube.com/vi/NF1pwjL9-DE/0.jpg)](https://www.youtube.com/watch?v=NF1pwjL9-DE)
 
 Another video that dives more in the Maths behind Elliptic Curves, and compares them to RSA. You are not required to understand the maths behind Elliptic Curves, but it is always good to have an idea of how things work behind the curtain:
 
-https://www.youtube.com/watch?v=dCvB-mhkT0w
+[![ECC Maths Video](https://img.youtube.com/vi/dCvB-mhkT0w/0.jpg)](https://www.youtube.com/watch?v=dCvB-mhkT0w)
 
 ## Digital Signature
 We are going to use Elliptic Curves to generate digital signatures. The algorithm we are going to use is the **ECDSA**. The following video explains how a digital signature algorithm ensures data authenticity:
 
-https://www.youtube.com/watch?v=Aq3a-_O2NcI&t=1s
+
+[![Digital Signature Video](https://img.youtube.com/vi/Aq3a-_O2NcI/0.jpg)](https://www.youtube.com/watch?v=Aq3a-_O2NcI&t=1s)
 
 ## Data structures
 
