@@ -10,37 +10,41 @@ EC_KEY *ec_load(char const *folder)
 {
 	EC_KEY *key = NULL;
 	char buf[BUFSIZ];
-	FILE *fp;
+	FILE *filePointer;
 
+	/*Check if folder is NULL*/
 	if (!folder || strlen(folder) + strlen(PUB_FILENAME) > BUFSIZ)
 		return (NULL);
-
+	/*Create a new EC_KEY structure*/
 	sprintf(buf, "%s/%s", folder, PUB_FILENAME);
-	fp = fopen(buf, "r");
-	if (!fp)
+	filePointer = fopen(buf, "r");
+	/*Check if filePointer is NULL*/
+	if (!filePointer)
 		return (NULL);
-	if (!PEM_read_EC_PUBKEY(fp, &key, NULL, NULL))
+	/*Read the public key from the file*/
+	if (!PEM_read_EC_PUBKEY(filePointer, &key, NULL, NULL))
 	{
-		fclose(fp);
+		fclose(filePointer);
 		return (NULL);
 	}
 
-	fclose(fp);
-
+	fclose(filePointer);
+	/*Create a new EC_KEY structure*/
 	sprintf(buf, "%s/%s", folder, PRI_FILENAME);
-	fp = fopen(buf, "r");
-	if (!fp)
+	filePointer = fopen(buf, "r");
+	if (!filePointer)
 	{
 		EC_KEY_free(key);
 		return (NULL);
 	}
-	if (!PEM_read_ECPrivateKey(fp, &key, NULL, NULL))
+	/*Read the private key from the file*/
+	if (!PEM_read_ECPrivateKey(filePointer, &key, NULL, NULL))
 	{
-		fclose(fp);
+		fclose(filePointer);
 		EC_KEY_free(key);
 		return (NULL);
 	}
 
-	fclose(fp);
+	fclose(filePointer);
 	return (key);
 }
