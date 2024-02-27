@@ -30,7 +30,7 @@ int ec_save(EC_KEY *key, char const *folder)
 	}
 	/* Save private key to file */
 	priv_file = fopen(path_priv, "w");
-
+	/* Check if file was created */
 	if (!priv_file || PEM_write_ECPrivateKey(priv_file, key, NULL, NULL, 0,
 											NULL, NULL) == 0)
 	{
