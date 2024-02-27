@@ -12,8 +12,6 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 {
 	const EC_GROUP *group;
 	const EC_POINT *point;
-	int result;
-
 
 	/*Check if key or pub is NULL*/
 	if (!key || !pub)
@@ -28,17 +26,8 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 		return (NULL);
 
 	/*Convert public key point to uncompressed octet string*/
-	result = EC_POINT_point2oct(group, point, POINT_CONVERSION_UNCOMPRESSED,
-									pub, EC_PUB_LEN, NULL);
-
-	/*Check the length and first byte of the octet string*/
-	if (result != EC_PUB_LEN || pub[0] == 0)
-	{
-		/*Handle specific error based on 'result' value*/
-		/*Print OpenSSL errors*/
-		ERR_print_errors_fp(stderr);
+	if (!EC_POINT_point2oct(group, point, POINT_CONVERSION_UNCOMPRESSED, pub,
+				EC_PUB_LEN, NULL))
 		return (NULL);
-	}
-
 	return (pub);
 }
