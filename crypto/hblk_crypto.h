@@ -8,6 +8,8 @@
 #include <openssl/pem.h>
 #include <openssl/sha.h>
 #include <openssl/err.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 # define EC_CURVE NID_secp256k1
 
@@ -48,5 +50,8 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN]);
 
 /*Function Tasks 3*/
 EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN]);
+
+/*Function Tasks 4*/
+int ec_save(EC_KEY *key, char const *folder);
 
 #endif /* _CRYPTO_H_ */
