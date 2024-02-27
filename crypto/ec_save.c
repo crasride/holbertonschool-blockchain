@@ -12,11 +12,11 @@ int ec_save(EC_KEY *key, char const *folder)
 {
 	char path_priv[BUFSIZ];
 	char path_pub[BUFSIZ];
+	FILE *priv_file, *pub_file;
 
 	/* Check if key or folder is NULL */
 	if (!key || !folder)
 		return (0);
-
 	/* Create the paths for private and public key files */
 	sprintf(path_priv, "%s/key.pem", folder);
 	sprintf(path_pub, "%s/key_pub.pem", folder);
@@ -29,7 +29,7 @@ int ec_save(EC_KEY *key, char const *folder)
 		return (0);
 	}
 	/* Save private key to file */
-	FILE *priv_file = fopen(path_priv, "w");
+	priv_file = fopen(path_priv, "w");
 
 	if (!priv_file || PEM_write_ECPrivateKey(priv_file, key, NULL, NULL, 0,
 											NULL, NULL) == 0)
@@ -40,7 +40,7 @@ int ec_save(EC_KEY *key, char const *folder)
 	}
 	fclose(priv_file);
 	/* Save public key to file */
-	FILE *pub_file = fopen(path_pub, "w");
+	pub_file = fopen(path_pub, "w");
 
 	if (!pub_file || PEM_write_EC_PUBKEY(pub_file, key) == 0)
 	{
