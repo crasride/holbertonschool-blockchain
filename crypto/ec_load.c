@@ -1,52 +1,46 @@
 #include "hblk_crypto.h"
 
 /**
- * ec_load - Loads an EC key pair from disk
- *
- * @folder: Path to the folder from which to load the keys
- *
- * Return: Pointer to the created EC key pair on success, or NULL on failure
- */
+* ec_load - load an EC key pair from the disk
+* @folder: path to folder from which to load the keys
+*
+* Return: pointer to created EC key pair, NULL on error
+*/
 EC_KEY *ec_load(char const *folder)
 {
-	char path_priv[BUFSIZ];
-	char path_pub[BUFSIZ];
-	FILE *priv_file, *pub_file;
-	EC_KEY *key;
+	EC_KEY *key = NULL;
+	char buf[BUFSIZ];
+	FILE *fp;
 
-	if (!folder)
+	if (!folder || strlen(folder) + strlen(PUB_FILENAME) > BUFSIZ)
 		return (NULL);
 
-	sprintf(path_priv, "%s/key.pem", folder);
-	sprintf(path_pub, "%s/key_pub.pem", folder);
-	priv_file = fopen(path_priv, "r");
-	if (!priv_file)
+	sprintf(buf, "%s/%s", folder, PUB_FILENAME);
+	fp = fopen(buf, "r");
+	if (!fp)
+		return (NULL);
+	if (!PEM_read_EC_PUBKEY(fp, &key, NULL, NULL))
 	{
-		perror("fopen");
+		fclose(fp);
 		return (NULL);
 	}
-	key = PEM_read_ECPrivateKey(priv_file, NULL, NULL, NULL);
-	fclose(priv_file);
-	if (!key)
+
+	fclose(fp);
+
+	sprintf(buf, "%s/%s", folder, PRI_FILENAME);
+	fp = fopen(buf, "r");
+	if (!fp)
 	{
-		fprintf(stderr, "Failed to read private key from file\n");
-		return (NULL);
-	}
-	pub_file = fopen(path_pub, "r");
-	if (!pub_file)
-	{
-		perror("fopen");
 		EC_KEY_free(key);
 		return (NULL);
 	}
-	if (PEM_read_EC_PUBKEY(pub_file, &key, NULL, NULL) == 0)
+	if (!PEM_read_ECPrivateKey(fp, &key, NULL, NULL))
 	{
-		fprintf(stderr, "Failed to read public key from file\n");
-		fclose(pub_file);
+		fclose(fp);
 		EC_KEY_free(key);
 		return (NULL);
 	}
-	fclose(pub_file);
 
+	fclose(fp);
 	return (key);
 }
