@@ -54,4 +54,7 @@ EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN]);
 /*Function Tasks 4*/
 int ec_save(EC_KEY *key, char const *folder);
 
+/*Function Tasks 5*/
+EC_KEY *ec_load(char const *folder);
+
 #endif /* _CRYPTO_H_ */
