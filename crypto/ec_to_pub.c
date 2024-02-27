@@ -1,19 +1,18 @@
 #include "hblk_crypto.h"
 
 /**
- * ec_to_pub - Extrae la clave pública de una estructura EC_KEY
- *
- * @key: Puntero a la estructura EC_KEY para extraer la clave pública
- * @pub: Dirección en la que almacenar la clave pública extraída
- *
- * Return: Puntero a pub en caso de éxito, NULL en caso de fallo
- */
+* ec_to_pub - Extrae la clave pública de una estructura EC_KEY
+*
+* @key: Puntero a la estructura EC_KEY para extraer la clave pública
+* @pub: Dirección en la que almacenar la clave pública extraída
+*
+* Return: Puntero a pub en caso de éxito, NULL en caso de fallo
+*/
 uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 {
 	const EC_GROUP *group;
 	const EC_POINT *point;
 	int result;
-
 
 	/*Check if key or pub is NULL*/
 	if (!key || !pub)
@@ -28,7 +27,7 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 		return (NULL);
 
 	/*Convert public key point to uncompressed octet string*/
-	int result = EC_POINT_point2oct(group, point, POINT_CONVERSION_UNCOMPRESSED,
+	result = EC_POINT_point2oct(group, point, POINT_CONVERSION_UNCOMPRESSED,
 									pub, EC_PUB_LEN, NULL);
 
 	/*Check the length and first byte of the octet string*/
