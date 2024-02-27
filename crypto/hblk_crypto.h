@@ -14,4 +14,7 @@
 uint8_t *sha256(int8_t const *s, size_t len,
 		uint8_t digest[SHA256_DIGEST_LENGTH]);
 
+/*Function Tasks 1*/
+EC_KEY *ec_create(void);
+
 #endif /* _CRYPTO_H_ */
