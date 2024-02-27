@@ -13,6 +13,7 @@
 uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg,
 		size_t msglen, sig_t *sig)
 {
+
 	uint32_t siglen = 0;
 
 	if (!key || !msg || !sig)
@@ -23,7 +24,7 @@ uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg,
 	if (ECDSA_sign(0, msg, msglen, sig->sig, &siglen, (EC_KEY *)key) != 1)
 		return (NULL);
 
-	sig->len = (uint8_t)siglen;
+	sig->len = siglen;
 	return (sig->sig);
 }
 
