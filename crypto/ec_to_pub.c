@@ -1,41 +1,42 @@
 #include "hblk_crypto.h"
 
 /**
-* ec_to_pub - Extracts the public key from an EC_KEY structure
-*
-* @key: Pointer to the EC_KEY structure to retrieve the public key from
-* @pub: Address at which to store the extracted public key
-*
-* Return: Pointer to pub on success, NULL on failure
-*/
+ * ec_to_pub - Extrae la clave pública de una estructura EC_KEY
+ *
+ * @key: Puntero a la estructura EC_KEY para extraer la clave pública
+ * @pub: Dirección en la que almacenar la clave pública extraída
+ *
+ * Return: Puntero a pub en caso de éxito, NULL en caso de fallo
+ */
 uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN])
 {
+	const EC_GROUP *group;
 	const EC_POINT *point;
 
-	/* Check if key is NULL */
-	if (!key)
+	/*Check if key or pub is NULL*/
+	if (!key || !pub)
 		return (NULL);
 
-	/* Get the public key point from the EC_KEY structure */
+	/*Get the group and public key point*/
+	group = EC_KEY_get0_group(key);
 	point = EC_KEY_get0_public_key(key);
-	if (!point)
+
+	/*Check whether group or point is NULL*/
+	if (!group || !point)
 		return (NULL);
 
-	/* Convert the EC_POINT to octet string representation of the public key */
-	if (EC_POINT_point2oct(
-	/* EC_KEY_get0_group - get the EC_GROUP structure of an EC_KEY object */
-			EC_KEY_get0_group(key),
-			/* point - the EC_POINT to be converted */
-			point,
-	/* EC_POINT_CONVERSION_UNCOMPRESSED - the point is represented as (x,y) */
-			POINT_CONVERSION_UNCOMPRESSED,
-	/* pub - the buffer where the octet string representation is stored */
-			pub,
-			/* EC_PUB_LEN - the maximum number of bytes to write to buf */
-			EC_PUB_LEN,
-			/* NULL - the standard conversion form is used */
-			NULL) == 0)
+	/*Convert public key point to uncompressed octet string*/
+	int result = EC_POINT_point2oct(group, point, POINT_CONVERSION_UNCOMPRESSED,
+									pub, EC_PUB_LEN, NULL);
+
+	/*Check the length and first byte of the octet string*/
+	if (result != EC_PUB_LEN || pub[0] == 0)
+	{
+		/*Handle specific error based on 'result' value*/
+		/*Print OpenSSL errors*/
+		ERR_print_errors_fp(stderr);
 		return (NULL);
+	}
 
 	return (pub);
 }

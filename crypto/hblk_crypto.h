@@ -9,6 +9,8 @@
 #include <openssl/sha.h>
 /*Add Function Tasks 2*/
 #define EC_PUB_LEN 65
+#include <openssl/err.h>
+
 
 /*Function Tasks 0*/
 uint8_t *sha256(int8_t const *s, size_t len,
