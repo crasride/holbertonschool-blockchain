@@ -4,8 +4,8 @@
 <img width="" height="" src="./media/vecteezy_concepto-de-red-de-cadena-de-bloques-tecnologia-de_6514761.jpg">
 </p>
 
----
-<h1 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/crypto"> 👉 1. Crypto</a></h1>
+
+<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/crypto"> 👉 1. Crypto</a></h2>
 
 
 ### Learning Objectives
@@ -91,8 +91,8 @@
 </details>
 <br>
 
----
-<h1 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.1"> 👉 2. Data structures</a></h1>
+
+<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.1"> 👉 2. Data structures</a></h2>
 
 ### Learning Objectives
 
@@ -138,7 +138,20 @@
 </details>
 <br>
 
----
+
+
+<h2 align="center"><a href=""> 👉 3. Block Mining</a></h2>
+
+* in progress
+
+<h2 align="center"><a href=""> 👉 4. Transactions</a></h2>
+
+* in progress
+
+<h2 align="center"><a href=""> 👉 5. CLI</a></h2>
+
+* in progress
+
 
 ## Author
 
