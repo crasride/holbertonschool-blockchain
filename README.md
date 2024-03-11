@@ -5,7 +5,7 @@
 </p>
 
 ---
-<h1 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/crypto">Crypto</a></h1>
+<h1 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/crypto"> 👉 1. Crypto</a></h1>
 
 
 ### Learning Objectives
@@ -92,7 +92,7 @@
 <br>
 
 ---
-<h1 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.1">Data structures</a></h1>
+<h1 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.1"> 👉 2. Data structures</a></h1>
 
 ### Learning Objectives
 
