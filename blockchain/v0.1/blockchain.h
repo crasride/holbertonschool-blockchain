@@ -91,5 +91,8 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 /* Functions Task2 */
 void block_destroy(block_t *block);
 
+/* Functions Task3 */
+void blockchain_destroy(blockchain_t *blockchain);
+
 /* __attribute__((warn_unused_result)); */
 #endif /* _BLOCKCHAIN_H_ */
