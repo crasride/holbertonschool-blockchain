@@ -15,6 +15,7 @@ TASK0 = blockchain_create
 TASK1 = block_create
 TASK2 = block_destroy
 TASK3 = blockchain_destroy
+TASK4 = block_hash
 
 # Rule to build the executable
 blockchain_create-test: $(TASK0).c test/blockchain_create-main.c $(PROVIDED)
@@ -29,9 +30,12 @@ block_destroy-test: $(TASK2).c $(TASK1).c $(TASK0).c test/block_destroy-main.c $
 blockchain_destroy-test: $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/blockchain_destroy-main.c $(PROVIDED)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
+block_hash-test: $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/block_hash-main.c $(PROVIDED)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
 # Clean up object files and the executable
 clean:
-	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test blockchain_destroy-test
+	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test blockchain_destroy-test block_hash-test
 
 # Check for betty style
 check:
