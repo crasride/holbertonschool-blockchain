@@ -13,6 +13,7 @@ PROVIDED = provided/_blockchain_print.c provided/_blockchain_destroy.c provided/
 # Default Target: Build the executable
 TASK0 = blockchain_create
 TASK1 = block_create
+TASK2 = block_destroy
 
 # Rule to build the executable
 blockchain_create-test: $(TASK0).c test/blockchain_create-main.c $(PROVIDED)
@@ -21,13 +22,16 @@ blockchain_create-test: $(TASK0).c test/blockchain_create-main.c $(PROVIDED)
 block_create-test: $(TASK1).c $(TASK0).c test/block_create-main.c $(PROVIDED)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
+block_destroy-test: $(TASK2).c $(TASK1).c $(TASK0).c test/block_destroy-main.c $(PROVIDED)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
 # Clean up object files and the executable
 clean:
-	rm $(OBJ) blockchain_create-test block_create-test
+	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test
 
 # Check for betty style
 check:
-	betty $(TASK0).c $(TASK1).c
+	betty $(TASK0).c $(TASK1).c $(TASK3).c
 
 # Declaration of phony targets
 .PHONY: clean, check
