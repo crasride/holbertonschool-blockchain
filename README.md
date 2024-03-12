@@ -100,7 +100,8 @@
 <summary>How a Blockchain is structured</summary>
 <br>
 
-* 
+* A blockchain is a distributed and decentralized ledger that records transactions across a network of computers.
+* It consists of a chain of blocks, where each block contains a list of transactions.
 
 </details>
 
@@ -109,7 +110,8 @@
 <summary>How Blocks refer to each other</summary>
 <br>
 
-* 
+* Each block in a blockchain contains a reference (usually a hash) to the previous block in the chain.
+* This creates a linked structure, where blocks are connected in a sequential order.
 
 </details>
 
@@ -117,7 +119,8 @@
 <summary>How immutability is maintained in a Blockchain</summary>
 <br>
 
-* 
+* Immutability in a blockchain is maintained through the use of cryptographic hashes.
+* Once a block is added to the blockchain, it is difficult to alter because changing the data in one block would require changing the hash of that block and all subsequent blocks.
 
 </details>
 
@@ -125,7 +128,9 @@
 <summary>What is the Genesis Block, and why is it important</summary>
 <br>
 
-* 
+* The Genesis Block is the first block in a blockchain.
+* It serves as the foundation for the entire blockchain and has no predecessor.
+* The information in the Genesis Block is usually hardcoded into the blockchain's protocol.
 
 </details>
 
@@ -133,7 +138,15 @@
 <summary>How to hash a Block, and what information is stored in the hash</summary>
 <br>
 
-* 
+* A block is hashed by applying a cryptographic hash function (e.g., SHA-256) to its contents.
+* The hash includes the block's data, timestamp, previous block's hash, and a nonce (a value that, when hashed, meets certain criteria, typically related to the proof-of-work mechanism).
+* The hash uniquely identifies the block and ensures its integrity.
+
+**Information Stored in the Hash:**
+
+* The hash of a block is a fixed-length string of characters that uniquely represents the block.
+* It includes information such as the block's data, timestamp, previous block's hash, and nonce.
+* Any change in the block's content will result in a completely different hash.
 
 </details>
 <br>
