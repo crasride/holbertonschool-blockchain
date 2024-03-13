@@ -14,9 +14,11 @@ int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 	/* Get the endianness of the machine */
 	uint8_t endian = _get_endianness();
 
+	/* Check if blockchain and path are not NULL */
 	if (!blockchain || !path)
 		return (-1);
 
+	/* Open file */
 	fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 	if (fd == -1)
 		return (-1);
