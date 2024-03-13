@@ -78,7 +78,7 @@ holbertonschool-blockchain
 
 # Tasks
 
-### [0. SHA256](./crypto/sha256.c)
+### [0. SHA256](./sha256.c)
 Write a function that computes the hash of a sequence of bytes
 * Prototype: `uint8_t *sha256(int8_t const *s, size_t len, uint8_t digest[SHA256_DIGEST_LENGTH]);`, where
 	* `s` is the sequence of bytes to be hashed
@@ -149,7 +149,7 @@ alex@~/holbertonschool-blockchain/crypto$
 
 ---
 
-### [1. EC_KEY creation](./crypto/ec_create.c)
+### [1. EC_KEY creation](./ec_create.c)
 Write a function that creates a new EC key pair.
 * Prototype: `EC_KEY *ec_create(void);`
 * Your function must return a pointer to an `EC_KEY` structure, containing both the public and private keys, or `NULL` upon failure
@@ -218,7 +218,7 @@ alex@~/holbertonschool-blockchain/crypto$
 
 ---
 
-### [2. EC_KEY to public key](./crypto/ec_to_pub.c)
+### [2. EC_KEY to public key](./ec_to_pub.c)
 Write a function that extracts the public key from an `EC_KEY` opaque structure
 
 * Prototype: `uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN]);`, where:
@@ -308,7 +308,7 @@ alex@~/holbertonschool-blockchain/crypto$
 
 ---
 
-### [3. EC_KEY from public key](./crypto/ec_from_pub.c)
+### [3. EC_KEY from public key](./ec_from_pub.c)
 Write a function that creates an `EC_KEY` structure given a public key
 
 * Prototype: `EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN]);`, where:
@@ -417,7 +417,7 @@ alex@~/holbertonschool-blockchain/crypto$
 
 ---
 
-### [4. EC_KEY - Save to file](./crypto/ec_save.c)
+### [4. EC_KEY - Save to file](./ec_save.c)
 Write a function that saves an existing EC key pair on the disk.
 
 * Prototype: `int ec_save(EC_KEY *key, char const *folder);`, where
@@ -537,7 +537,7 @@ alex@~/holbertonschool-blockchain/crypto$
 
 ---
 
-### [5. EC_KEY - Load from file](./crypto/ec_load.c)
+### [5. EC_KEY - Load from file](./ec_load.c)
 Write a function that loads an EC key pair from the disk.
 
 * Prototype: `EC_KEY *ec_load(char const *folder);`, where
@@ -613,7 +613,7 @@ alex@~/holbertonschool-blockchain/crypto$
 
 ---
 
-### [6. Signature](./crypto/ec_sign.c)
+### [6. Signature](./ec_sign.c)
 Write a function that signs a given set of bytes, using a given EC_KEY **private key**
 
 * Prototype: `uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg, size_t msglen, sig_t *sig);`, where:
@@ -707,7 +707,7 @@ alex@~/holbertonschool-blockchain/crypto$
 * File: `crypto/ec_sign.c`
 ---
 
-### [7. Signature verification](./crypto/ec_verify.c)
+### [7. Signature verification](./ec_verify.c)
 Write a function that verifies the signature of a given set of bytes, using a given EC_KEY **public key**
 
 * Prototype: `int ec_verify(EC_KEY const *key, uint8_t const *msg, size_t msglen, sig_t const *sig);`, where:
@@ -809,7 +809,7 @@ alex@~/holbertonschool-blockchain/crypto$
 
 ---
 
-### [8. Library](./crypto/Makefile)
+### [8. Library](./Makefile)
 Write a Makefile that compiles all the previous functions and archives them into a static library for future use.
 
 The library must be called `libhblk_crypto.a`, and your Makefile must define a rule for this file.
