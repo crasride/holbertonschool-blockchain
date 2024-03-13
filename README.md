@@ -92,7 +92,7 @@
 <br>
 
 
-<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.1"> 👉 2. Data structures</a></h2>
+<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.2"> 👉 2. Data structures</a></h2>
 
 ### Learning Objectives
 
@@ -153,9 +153,63 @@
 
 
 
-<h2 align="center"><a href=""> 👉 3. Block Mining</a></h2>
+<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.2"> 👉 3. Block Mining</a></h2>
 
-* in progress
+### Learning Objectives
+
+<details>
+<summary>What is the purpose of the Block difficulty</summary>
+<br>
+
+
+
+</details>
+
+
+<details>
+<summary>What is the Proof of Work</summary>
+<br>
+
+
+</details>
+
+<details>
+<summary>How to check that a given hash matches a given difficulty</summary>
+<br>
+
+
+
+</details>
+</details>
+
+<details>
+<summary>How to mine a Block</summary>
+<br>
+
+
+
+</details>
+
+<details>
+<summary>Why Block mining is brute force only</summary>
+<br>
+
+
+
+</details>
+
+<details>
+<summary>How to automatically adjust the difficulty</summary>
+<br>
+
+
+
+**Information Stored in the Hash:**
+
+
+
+</details>
+<br>
 
 <h2 align="center"><a href=""> 👉 4. Transactions</a></h2>
 
