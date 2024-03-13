@@ -17,6 +17,7 @@ TASK2 = block_destroy
 TASK3 = blockchain_destroy
 TASK4 = block_hash
 TASK5 = blockchain_serialize
+TASK6 = blockchain_deserialize
 
 # Rule to build the executable
 blockchain_create-test: $(TASK0).c test/blockchain_create-main.c $(PROVIDED)
@@ -35,11 +36,14 @@ block_hash-test: $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/blo
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 blockchain_serialize-test: $(TASK5).c $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/blockchain_serialize-main.c $(PROVIDED)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
+blockchain_deserialize-test: $(TASK6).c $(TASK5).c $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/blockchain_deserialize-main.c $(PROVIDED)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 # Clean up object files and the executable
 clean:
-	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test blockchain_destroy-test block_hash-test blockchain_serialize-test
+	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test blockchain_destroy-test block_hash-test blockchain_serialize-test blockchain_deserialize-test
 
 # Check for betty style
 check:

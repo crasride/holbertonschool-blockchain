@@ -112,6 +112,16 @@ int blockchain_serialize(blockchain_t const *blockchain, char const *path);
 uint8_t _get_endianness(void);
 
 /* Functions Task6 */
+#define SWAPENDIAN32(x) (\
+	(((x) & 0xff000000) >> 24) | \
+	(((x) & 0x00ff0000) >> 8) | \
+	(((x) & 0x0000ff00) << 8) | \
+	(((x) & 0x000000ff) << 24) \
+)
+blockchain_t *blockchain_deserialize(char const *path);
+llist_t *blocks(int fd, uint32_t size, uint8_t endianness);
+void cleanup_blockchain_data(blockchain_t *chain, int fd);
+void cleanup_block_data(block_t *block, llist_t *list);
 
 /* __attribute__((warn_unused_result)); */
 #endif /* _BLOCKCHAIN_H_ */
