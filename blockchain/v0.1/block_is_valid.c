@@ -42,7 +42,7 @@ int block_is_valid(block_t const *block, block_t const *prev_block)
 
 	cleanup_hash(hash_verify, SHA256_DIGEST_LENGTH);
 
-	if (!block_hash(block, hash_verify) ||
+	if (block_hash(block, hash_verify) == NULL ||
 		memcmp(hash_verify, block->hash, SHA256_DIGEST_LENGTH) != 0)
 		return (1);
 
