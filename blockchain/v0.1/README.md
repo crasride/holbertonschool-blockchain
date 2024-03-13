@@ -75,7 +75,7 @@ holbertonschool-blockchain
 ```
 
 ### Tasks
-### [0. Create Blockchain]()
+### [0. Create Blockchain](./blockchain_create.c)
 
 Write a function that creates a `Blockchain` structure, and initializes it.
 
@@ -166,7 +166,7 @@ alex@~/holbertonschool-blockchain/blockchain/v0.1$
 
 ---
 
-### [1. Create Block]()
+### [1. Create Block](./block_create.c)
 
 Write a function that creates a Block structure and initializes it.
 
@@ -272,7 +272,7 @@ alex@~/holbertonschool-blockchain/blockchain/v0.1$
 
 ---
 
-### [2. Delete Block]()
+### [2. Delete Block](./block_destroy.c)
 
 Write a function that deletes an existing Block
 
@@ -338,7 +338,7 @@ alex@~/holbertonschool-blockchain/blockchain/v0.1$
 
 ---
 
-### [3. Delete Blockchain]()
+### [3. Delete Blockchain](./blockchain_destroy.c)
 
 Write a function that deletes an existing Blockchain, along with all the Blocks it contains
 
@@ -406,7 +406,7 @@ alex@~/holbertonschool-blockchain/blockchain/v0.1$
 * GitHub repository:  `holbertonschool-blockchain`
 * File: `blockchain/v0.1/blockchain_destroy.c`
 
-### [4. Hash Block]()
+### [4. Hash Block](./block_hash.c)
 
 Write a function that computes the hash of a Block
 
@@ -545,7 +545,7 @@ alex@~/holbertonschool-blockchain/blockchain/v0.1$
 
 ---
 
-### [5. Save Blockchain]()
+### [5. Save Blockchain](./blockchain_serialize.c)
 
 Write a function that serializes a Blockchain into a file
 
@@ -698,7 +698,7 @@ alex@~/holbertonschool-blockchain/blockchain/v0.1$
 
 ---
 
-### [6. Load Blockchain]()
+### [6. Load Blockchain](./blockchain_deserialize.c)
 
 Write a function that deserializes a Blockchain from a file
 
@@ -825,7 +825,7 @@ alex@~/holbertonschool-blockchain/blockchain/v0.1$
 
 ---
 
-### [7. Block validity]()
+### [7. Block validity](./block_is_valid.c)
 
 Write a function that verifies that a Block is valid
 
