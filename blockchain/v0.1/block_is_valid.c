@@ -24,30 +24,30 @@ int block_is_valid(block_t const *block, block_t const *prev_block)
 	block_t const genesis = GENESIS_BLOCK;
 
 	if (!block || (!prev_block && block->info.index != 0))
-		return (0);
+		return (1);
 
 	if (block->info.index == 0)
 		return (memcmp(block, &genesis, sizeof(genesis)) == 0 ? 1 : 0);
 
 	if (block->info.index != prev_block->info.index + 1)
-		return (0);
+		return (1);
 
 	if (block_hash(prev_block, hash_verify) == NULL ||
 		memcmp(hash_verify, prev_block->hash, SHA256_DIGEST_LENGTH) != 0)
-		return (0);
+		return (1);
 
 	if (memcmp(prev_block->hash, block->info.prev_hash,
 													SHA256_DIGEST_LENGTH) != 0)
-		return (0);
+		return (1);
 
 	cleanup_hash(hash_verify, SHA256_DIGEST_LENGTH);
 
 	if (block_hash(block, hash_verify) == NULL ||
 		memcmp(hash_verify, block->hash, SHA256_DIGEST_LENGTH) != 0)
-		return (0);
+		return (1);
 
 	if (block->data.len > BLOCKCHAIN_DATA_MAX)
-		return (0);
+		return (1);
 
-	return (1);
+	return (0);
 }

@@ -47,7 +47,6 @@ typedef struct block_data_s
 * @timestamp:  Time the Block was created at (UNIX timestamp)
 * @nonce:      Salt value used to alter the Block hash
 * @prev_hash:  Hash of the previous Block in the Blockchain
-* @hash:       256-bit digest of the Block, to ensure authenticity
 */
 typedef struct block_info_s
 {
@@ -63,7 +62,6 @@ typedef struct block_info_s
 	uint64_t    timestamp;
 	uint64_t    nonce;
 	uint8_t     prev_hash[SHA256_DIGEST_LENGTH];
-	uint8_t     hash[SHA256_DIGEST_LENGTH];
 } block_info_t;
 
 /**
@@ -133,7 +131,6 @@ void cleanup_block_data(block_t *block, llist_t *list);
 		1537578000, /* timestamp */ \
 		0, /* nonce */ \
 		{0}, /* prev_hash */ \
-		{0} /* hash (initialize with zeros) */ \
 	}, \
 	{ /* data */ \
 		"Holberton School", /* buffer */ \
