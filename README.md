@@ -92,7 +92,7 @@
 <br>
 
 
-<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.2"> 👉 2. Data structures</a></h2>
+<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.1"> 👉 2. Data structures</a></h2>
 
 ### Learning Objectives
 
