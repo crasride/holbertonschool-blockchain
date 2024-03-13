@@ -16,6 +16,7 @@ TASK1 = block_create
 TASK2 = block_destroy
 TASK3 = blockchain_destroy
 TASK4 = block_hash
+TASK5 = blockchain_serialize
 
 # Rule to build the executable
 blockchain_create-test: $(TASK0).c test/blockchain_create-main.c $(PROVIDED)
@@ -33,13 +34,16 @@ blockchain_destroy-test: $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/blockc
 block_hash-test: $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/block_hash-main.c $(PROVIDED)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
+blockchain_serialize-test: $(TASK5).c $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/blockchain_serialize-main.c $(PROVIDED)
+
+
 # Clean up object files and the executable
 clean:
-	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test blockchain_destroy-test block_hash-test
+	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test blockchain_destroy-test block_hash-test blockchain_serialize-test
 
 # Check for betty style
 check:
-	betty $(TASK0).c $(TASK1).c $(TASK2).c $(TASK3).c
+	betty $(TASK0).c $(TASK1).c $(TASK2).c $(TASK3).c $(TASK4).c $(TASK5).c
 
 # Declaration of phony targets
 .PHONY: clean, check

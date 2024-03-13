@@ -8,6 +8,12 @@
 #include <llist.h>
 #include <openssl/sha.h> /* SHA256_DIGEST_LENGTH */
 #include <time.h>
+/*task 5*/
+#include <fcntl.h> /* open */
+#include "./provided/endianness.h"
+#define HBLK_MAGIC "HBLK"
+#define HBLK_VERSION "0.1"
+
 
 #define GENESIS_HASH "\xc5\x2c\x26\xc8\xb5\x46\x16\x39\x63\x5d\x8e\xdf\x2a\x97\xd4\x8d\x0c\x8e\x00\x09\xc8\x17\xf2\xb1\xd3\xd7\xff\x2f\x04\x51\x58\x03"
 #define SHA256_DIGEST_LENGTH 32
@@ -99,6 +105,13 @@ void blockchain_destroy(blockchain_t *blockchain);
 /* Functions Task4 */
 uint8_t *block_hash(block_t const *block,
 										uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
+
+/* Functions Task5 */
+int blockchain_serialize(blockchain_t const *blockchain, char const *path);
+/* Functions identifier type endian */
+uint8_t _get_endianness(void);
+
+/* Functions Task6 */
 
 /* __attribute__((warn_unused_result)); */
 #endif /* _BLOCKCHAIN_H_ */
