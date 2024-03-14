@@ -145,6 +145,5 @@ int block_is_valid(block_t const *block, block_t const *prev_block);
 /* Functions Task0 */
 int hash_matches_difficulty(uint8_t const hash[SHA256_DIGEST_LENGTH],
 														uint32_t difficulty);
-
 /* __attribute__((warn_unused_result)); */
 #endif /* _BLOCKCHAIN_H_ */
