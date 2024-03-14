@@ -161,7 +161,9 @@
 <summary>What is the purpose of the Block difficulty</summary>
 <br>
 
+The block difficulty in a blockchain network serves the purpose of regulating the rate at which new blocks are added to the blockchain. It is a measure of how difficult it is to find a hash below a certain target value. 
 
+This difficulty adjustment ensures that new blocks are added at a relatively constant rate, regardless of changes in the network's total hash rate.
 
 </details>
 
@@ -170,6 +172,11 @@
 <summary>What is the Proof of Work</summary>
 <br>
 
+Proof of Work is a consensus mechanism used in blockchain networks, most notably in `Bitcoin`.
+
+It involves participants (miners) solving complex mathematical puzzles to validate and process transactions on the network. 
+
+ Miners compete to find a solution to a cryptographic puzzle, which requires significant computational power. Once a miner finds a solution, they can add a new block to the blockchain and are rewarded with newly created cryptocurrency (like `Bitcoin`).
 
 </details>
 
@@ -177,6 +184,9 @@
 <summary>How to check that a given hash matches a given difficulty</summary>
 <br>
 
+To check if a given hash matches a given difficulty, you need to compare the hash against a target value. The difficulty level determines the target value, which is essentially a threshold that the hash must be below for the block to be considered valid. 
+
+If the hash is below the target value, it meets the difficulty requirement. Miners repeatedly hash block headers with different nonce values until they find a hash that meets the required difficulty.
 
 
 </details>
@@ -186,7 +196,12 @@
 <summary>How to mine a Block</summary>
 <br>
 
+* Mining a block involves the following steps:
 
+	* Collecting transactions: Gather unconfirmed transactions from the network.
+	* Building a block: Group these transactions into a block along with other data such as a reference to the previous block (blockchain's history), a timestamp, and a nonce.
+	* Finding a valid hash: Use computational power to repeatedly hash the block header with different nonce values until a hash is found that meets the current difficulty requirement.
+	* Propagating the block: Once a valid hash is found, propagate the block to other nodes in the network for validation and inclusion in the blockchain.
 
 </details>
 
@@ -194,6 +209,11 @@
 <summary>Why Block mining is brute force only</summary>
 <br>
 
+Block mining is often referred to as brute force because it involves trying numerous combinations of nonce values until a valid hash is found. 
+
+There's no shortcut to finding the correct hash other than iterating through different nonce values until one produces a hash that meets the difficulty requirement. 
+
+This process requires significant computational power and energy consumption.
 
 
 </details>
@@ -202,11 +222,11 @@
 <summary>How to automatically adjust the difficulty</summary>
 <br>
 
+Difficulty adjustment is typically built into the protocol of blockchain networks. In `Bitcoin`, for example, the difficulty adjusts every 2016 blocks (approximately every two weeks). 
 
+The adjustment is based on the time it took to mine the previous 2016 blocks. If blocks were mined faster than the target block time (10 minutes in Bitcoin's case), the difficulty increases; if they were mined slower, the difficulty decreases.
 
-**Information Stored in the Hash:**
-
-
+This mechanism aims to maintain a relatively stable block production rate regardless of fluctuations in the network's hash rate.
 
 </details>
 <br>
