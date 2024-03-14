@@ -20,6 +20,7 @@ TASK5 = blockchain_serialize
 TASK6 = blockchain_deserialize
 TASK7 = block_is_valid
 TASK00 = hash_matches_difficulty
+TASK01 = block_mine
 
 
 # Rule to build the executable
@@ -50,9 +51,21 @@ block_is_valid-test: $(TASK7).c $(TASK6).c $(TASK5).c $(TASK4).c $(TASK3).c $(TA
 hash_matches_difficulty-test: $(TASK00).c test/hash_matches_difficulty-main.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
+block_mine-test: $(TASK01).c $(TASK7).c $(TASK6).c $(TASK5).c $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/block_mine-main.c $(FILES_PROVIDED)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 # Clean up object files and the executable
 clean:
-	rm $(OBJ) blockchain_create-test block_create-test block_destroy-test blockchain_destroy-test block_hash-test blockchain_serialize-test blockchain_deserialize-test block_is_valid-test hash_matches_difficulty-test
+	rm $(OBJ) \
+	blockchain_create-test \
+	block_create-test \
+	block_destroy-test \
+	blockchain_destroy-test \
+	block_hash-test \
+	blockchain_serialize-test \
+	blockchain_deserialize-test \
+	block_is_valid-test \
+	hash_matches_difficulty-test \
+	block_mine-test
 
 # Check for betty style
 check:
