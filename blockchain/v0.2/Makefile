@@ -21,6 +21,7 @@ TASK6 = blockchain_deserialize
 TASK7 = block_is_valid
 TASK00 = hash_matches_difficulty
 TASK01 = block_mine
+TASK02 = blockchain_difficulty
 
 
 # Rule to build the executable
@@ -53,6 +54,9 @@ hash_matches_difficulty-test: $(TASK00).c test/hash_matches_difficulty-main.c
 
 block_mine-test: $(TASK01).c $(TASK7).c $(TASK6).c $(TASK5).c $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/block_mine-main.c $(FILES_PROVIDED)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+blockchain_difficulty-test: $(TASK02).c $(TASK7).c $(TASK6).c $(TASK5).c $(TASK4).c $(TASK3).c $(TASK2).c $(TASK1).c $(TASK0).c test/blockchain_difficulty-main.c $(FILES_PROVIDED)
+
 # Clean up object files and the executable
 clean:
 	rm $(OBJ) \
@@ -65,11 +69,12 @@ clean:
 	blockchain_deserialize-test \
 	block_is_valid-test \
 	hash_matches_difficulty-test \
-	block_mine-test
+	block_mine-test \
+	blockchain_difficulty-test
 
 # Check for betty style
 check:
-	betty $(TASK0).c $(TASK1).c $(TASK2).c $(TASK3).c $(TASK4).c $(TASK5).c $(TASK6).c $(TASK7).c $(TASK00).c
+	betty $(TASK0).c $(TASK1).c $(TASK2).c $(TASK3).c $(TASK4).c $(TASK5).c $(TASK6).c $(TASK7).c $(TASK00).c $(TASK01).c $(TASK02).c
 
 # Declaration of phony targets
 .PHONY: clean, check
