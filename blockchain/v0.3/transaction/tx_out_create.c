@@ -1,12 +1,12 @@
 #include "transaction.h"
 
 /**
- * tx_out_create - Creates a transaction output structure
- * @amount: Amount in the transaction output
- * @pub: Receiver's public address
- *
- * Return: A pointer to the allocated transaction output
- */
+* tx_out_create - Creates a transaction output structure
+* @amount: Amount in the transaction output
+* @pub: Receiver's public address
+*
+* Return: A pointer to the allocated transaction output
+*/
 tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN])
 {
 	tx_out_t *output = calloc(1, sizeof(*output));
