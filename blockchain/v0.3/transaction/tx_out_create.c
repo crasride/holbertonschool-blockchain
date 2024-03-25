@@ -1,28 +1,28 @@
 #include "transaction.h"
 
 /**
- * tx_out_create - allocates and init a transaction output struct
- * @amount: the amount of transaction
- * @pub: Public key of the transaction receiver
- * Return: Pointer to the created tx output upon success, NULL if failure
+ * tx_out_create - Creates a transaction output structure
+ * @amount: Amount in the transaction output
+ * @pub: Receiver's public address
+ *
+ * Return: A pointer to the allocated transaction output
  */
-
 tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN])
 {
-	tx_out_t *tr_out = calloc(1, sizeof(*tr_out));
+	tx_out_t *output = calloc(1, sizeof(*output));
 
-	if (!tr_out || !pub)
+	if (!output)
 		return (NULL);
-	tr_out->amount = amount;
-	/* Ramdeck to `array decay` phenomenon */
-	memcpy(tr_out->pub, pub, EC_PUB_LEN);
 
-	if (!sha256((int8_t const *)tr_out, sizeof(uint32_t) + EC_PUB_LEN,
-				tr_out->hash))
+	output->amount = amount;
+	memcpy(output->pub, pub, sizeof(output->pub));
+
+	if (!sha256((const int8_t *)output, sizeof(*output), output->hash))
 	{
-		free(tr_out);
+		free(output);
 		return (NULL);
 	}
-	return (tr_out);
+
+	return (output);
 }
 
