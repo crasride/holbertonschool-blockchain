@@ -231,7 +231,7 @@ This mechanism aims to maintain a relatively stable block production rate regard
 </details>
 <br>
 
-<h2 align="center"><a href=""> 👉 4. Transactions</a></h2>
+<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.3"> 👉 4. Transactions</a></h2>
 
 * in progress
 
