@@ -17,7 +17,9 @@ tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN])
 	output->amount = amount;
 	memcpy(output->pub, pub, sizeof(output->pub));
 
-	if (!sha256((const int8_t *)output, sizeof(*output), output->hash))
+	if (!sha256((int8_t const *)output, sizeof(output->amount) +
+											sizeof(output->pub), output->hash))
+	/* if (!sha256((const int8_t *)output, sizeof(*output), output->hash)) */
 	{
 		free(output);
 		return (NULL);
