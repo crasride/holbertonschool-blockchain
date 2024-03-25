@@ -23,7 +23,6 @@ tx_in_t *tx_in_create(unspent_tx_out_t const *unspent)
 	memcpy(input->block_hash, unspent->block_hash, sizeof(input->block_hash));
 	memcpy(input->tx_id, unspent->tx_id, sizeof(input->tx_id));
 	memcpy(input->tx_out_hash, unspent->out.hash, sizeof(input->tx_out_hash));
-
 	/* Zero out the signature */
 	memset(&input->sig, 0, sizeof(input->sig));
 
