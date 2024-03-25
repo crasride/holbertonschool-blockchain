@@ -17,7 +17,7 @@ FILES_PROVIDED = transaction/tx_out_create.c provided/_print_hex_buffer.c transa
 OBJECTS = $(FILES_PROVIDED:.c=.o)
 
 # Target executable
-TASK0 = tx_out_create-test
+TASK0 = transaction/tx_out_create-test
 
 all: $(TASK0)
 
