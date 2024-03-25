@@ -2,8 +2,6 @@
 #define _TRANSACTION_H_
 
 #include "blockchain.h"
-#define EC_PUB_LEN 65
-
 
 /**
 * struct transaction_s - Transaction structure
