@@ -3,8 +3,6 @@
 
 #include "../../../crypto/hblk_crypto.h"
 #include <llist.h>
-#define EC_PUB_LEN 65
-
 
 /**
 * struct transaction_s - Transaction structure
