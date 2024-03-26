@@ -85,4 +85,10 @@ unspent_tx_out_t *unspent_tx_out_create(
 /* Functions Task 2*/
 tx_in_t *tx_in_create(unspent_tx_out_t const *unspent);
 
+/* Functions Task 3*/
+uint8_t *transaction_hash(transaction_t const *transaction,
+							uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
+
+/* Functions Task 4*/
+
 #endif /* _TRANSACTION_H_ */
