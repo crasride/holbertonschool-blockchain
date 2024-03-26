@@ -105,4 +105,7 @@ int transaction_is_valid(transaction_t const *transaction,
 transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index);
 #define COINBASE_AMOUNT 50
 
+/* Functions Task 8*/
+int coinbase_is_valid(transaction_t const *coinbase, uint32_t block_index);
+
 #endif /* _TRANSACTION_H_ */
