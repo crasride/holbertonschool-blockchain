@@ -67,9 +67,9 @@ int select_unspent_transaction(llist_node_t node, unsigned int idx, void *args)
 int verify_output_amounts(llist_node_t node, unsigned int idx, void *arg)
 {
 	/* Cast the argument to a pointer to the remaining balance */
-	uint32_t *remaining_balance = (uint32_t *)arg;
+	uint32_t *remaining_balance = arg;
 	/* Cast the node to a pointer to the transaction output */
-	tx_out_t *output = (tx_out_t *)node;
+	tx_out_t *output = node;
 
 	(void)idx;/* Avoid the warning "unused parameter" */
 
