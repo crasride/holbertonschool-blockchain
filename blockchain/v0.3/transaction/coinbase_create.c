@@ -1,5 +1,9 @@
 #include "transaction.h"
 
+
+int coinbase_create_continue(transaction_t *transaction, uint8_t *pub,
+							uint32_t block_index);
+
 /**
 * coinbase_create - create coinbase transaction
 * @receiver: coin receiver
