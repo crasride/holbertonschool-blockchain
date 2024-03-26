@@ -30,31 +30,31 @@ int select_unspent_transaction(llist_node_t node, unsigned int idx, void *args)
 	* printf("ptr[2] (input transaction id): %u\n", *(uint32_t *)ptr[2]);
 	* printf("ptr[3] (transaction ID): %p\n", ptr[3]);
 	*/
-	 (void)idx; /* Avoid the warning "unused parameter" */
-
+	(void)idx;/* Avoid the warning "unused parameter" */
+	/* Check if the unspent transaction matches the transaction input */
 	if (!tx_in)
-		return (1); /* No matching transaction input found */
-
+		return (1);
 	if (!memcmp(unspent->out.hash, tx_in->tx_out_hash, SHA256_DIGEST_LENGTH))
 	{
-		*tx_in_idx += 1; /* Increment the index */
-		*balance += unspent->out.amount; /* Update the balance */
-
-		key = ec_from_pub(unspent->out.pub); /* Create a new transaction input */
+		/* Increment the index and balance */
+		*tx_in_idx += 1;
+		/* Update the balance */
+		*balance += unspent->out.amount;
+		/* Create a new transaction input */
+		key = ec_from_pub(unspent->out.pub);
+		/* Check if the public key is valid */
 		if (!key)
-			return (1); /* Error creating the public key */
-
+			return (1);
+		/* Verify the signature of the transaction input */
 		if (!ec_verify(key, ptr[3], SHA256_DIGEST_LENGTH, &tx_in->sig))
 		{
 			EC_KEY_free(key);
-			return (1); /* Signature verification failed */
+			return (1);
 		}
-
 		EC_KEY_free(key);
-		return (0); /* Matching unspent transaction found */
+		(*(uint32_t *)ptr[4])++;
 	}
-
-	return (1); /* Unspent output referred to by transaction input not found */
+	return (0);
 }
 
 /**
@@ -97,6 +97,7 @@ int transaction_is_valid(transaction_t const *transaction,
 	void *args[4]; /* Array of arguments */
 	uint32_t idx = 0; /* Index of the current transaction input */
 	uint32_t input_amount = 0; /* Total input amount */
+	uint32_t matched_inputs = 0;
 
 	if (!transaction || !all_unspent)
 		return (0);
@@ -110,18 +111,19 @@ int transaction_is_valid(transaction_t const *transaction,
 	}
 	/* Select unspent transactions that match the transaction inputs */
 	args[0] = transaction->inputs, args[1] = &input_amount;
-	args[2] = &idx, args[3] = (void *)&transaction->id;
-	/* Verify the transaction inputs */
+	args[2] = &idx, args[3] = (void *)&transaction->id, args[4] = &matched_inputs;
 	if (llist_for_each(all_unspent, select_unspent_transaction, args)
-		|| idx != (uint32_t)llist_size(transaction->inputs))
+		|| matched_inputs != (uint32_t)llist_size(transaction->inputs))
 	{
 		return (0);
 	}
+
 	/* Verify the transaction outputs */
 	if (llist_for_each(transaction->outputs, verify_output_amounts, &input_amount)
 		|| input_amount != 0)
 	{
 		return (0);
 	}
+
 	return (1);
 }
