@@ -98,5 +98,9 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
 									uint32_t amount, llist_t *all_unspent);
 
 /* Functions Task 6*/
+int transaction_is_valid(transaction_t const *transaction,
+							llist_t *all_unspent);
+
+/* Functions Task 7*/
 
 #endif /* _TRANSACTION_H_ */
