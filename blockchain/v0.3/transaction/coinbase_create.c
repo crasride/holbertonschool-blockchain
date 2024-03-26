@@ -12,19 +12,19 @@ int coinbase_create_continue(transaction_t *transaction, uint8_t *pub,
 */
 transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index)
 {
-	transaction_t *transaction;
-	uint8_t pub[EC_PUB_LEN];
+	transaction_t *transaction; /* New transaction */
+	uint8_t pub[EC_PUB_LEN]; /* Buffer for public key */
 
-	/* Verificar si el receptor y la conversión de clave pública son exitosos */
+	/* Check whether the receiver and public key conversion are successful */
 	if (!receiver || !ec_to_pub(receiver, pub))
 		return (NULL);
 
-	/* Asignar memoria para la transacción */
+	/* Allocate memory for the transaction */
 	transaction = calloc(1, sizeof(*transaction));
 	if (!transaction)
 		return (NULL);
 
-	/* Inicializar las listas de inputs y outputs de la transacción */
+	/* Initialize the transaction input and output lists */
 	transaction->inputs = llist_create(MT_SUPPORT_FALSE);
 	transaction->outputs = llist_create(MT_SUPPORT_FALSE);
 	if (!transaction->inputs || !transaction->outputs)
@@ -33,14 +33,14 @@ transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index)
 		return (NULL);
 	}
 
-	/* Crear la transacción coinbase */
+	/* Create the coinbase transaction */
 	if (!coinbase_create_continue(transaction, pub, block_index))
 	{
 		free(transaction);
 		return (NULL);
 	}
 
-	/* Devolver la nueva transacción coinbase */
+	/* Return new coinbase transaction */
 	return (transaction);
 }
 
@@ -54,24 +54,25 @@ transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index)
 int coinbase_create_continue(transaction_t *transaction, uint8_t *pub,
 							uint32_t block_index)
 {
-	tx_out_t *output;
-	tx_in_t *input;
+	tx_out_t *output; /* New transaction output */
+	tx_in_t *input; /* New transaction input */
 
-	/* Asignar memoria para el output de la transacción */
+	/* Allocate memory for transaction output */
 	output = tx_out_create(COINBASE_AMOUNT, pub);
 	if (!output)
 		return (0);
 
-	/* Asignar memoria para el input de la transacción */
+	/* Allocate memory for transaction input */
 	input = calloc(1, sizeof(*input));
 	if (!input)
 	{
 		free(output);
 		return (0);
 	}
-
+	/* Copy block index to first 4 bytes of transaction output hash */
 	memcpy(input->tx_out_hash, &block_index, 4);
 
+	/* Add input and output to corresponding transaction lists */
 	if (llist_add_node(transaction->inputs, input, ADD_NODE_REAR) ||
 		llist_add_node(transaction->outputs, output, ADD_NODE_REAR))
 	{
@@ -82,7 +83,7 @@ int coinbase_create_continue(transaction_t *transaction, uint8_t *pub,
 		return (0);
 	}
 
-	/* Calcular el hash de la transacción */
+	/* Calculate transaction hash */
 	if (!transaction_hash(transaction, transaction->id))
 	{
 		free(output);
@@ -91,7 +92,6 @@ int coinbase_create_continue(transaction_t *transaction, uint8_t *pub,
 		llist_destroy(transaction->outputs, 0, NULL);
 		return (0);
 	}
-
-	/* Éxito en la creación de la transacción coinbase */
+	/* Success in creating coinbase transaction */
 	return (1);
 }
