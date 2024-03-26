@@ -67,9 +67,9 @@ int select_unspent_transaction(llist_node_t node, unsigned int idx, void *args)
 int verify_output_amounts(llist_node_t node, unsigned int idx, void *arg)
 {
 	/* Cast the argument to a pointer to the remaining balance */
-	uint32_t *remaining_balance = arg;
+	uint32_t *remaining_balance = (uint32_t *)arg;
 	/* Cast the node to a pointer to the transaction output */
-	tx_out_t *output = node;
+	tx_out_t *output = (tx_out_t *)node;
 
 	(void)idx;/* Avoid the warning "unused parameter" */
 
@@ -101,7 +101,8 @@ int transaction_is_valid(transaction_t const *transaction,
 	if (!transaction || !all_unspent)
 		return (0);
 	/* Compute the hash of the transaction */
-	transaction_hash(transaction, hash_buf);
+	if (!transaction_hash(transaction, hash_buf))
+		return (0);
 	/* Compare the computed hash with the transaction ID */
 	if (memcmp(transaction->id, hash_buf, SHA256_DIGEST_LENGTH))
 	{
