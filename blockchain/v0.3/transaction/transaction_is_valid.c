@@ -1,52 +1,36 @@
 #include "transaction.h"
 
 /**
-* select_unspent_transaction - Selects unspent transactions that match the
-* given transaction inputs.
-* @node: Current node representing an unspent transaction output.
-* @idx: Index of the current node (unused).
-* @args: Arguments passed to the function:
-* args[0] = Pointer to the list of transaction inputs (llist_t *tx_inputs).
-* args[1] = Pointer to the current balance (uint32_t *balance).
-* args[2] = Pointer to the index the current transaction input (uint32_t *idx).
-* args[3] = Transaction ID (uint8_t tx_id[SHA256_DIGEST_LENGTH]).
-* Return: 0 on success (matching unspent transaction found), 1 on failure
-* (no match found or error).
+* cmp_tr_ins - filter unspent transactions
+* choose only trx which belong to args[0]
+* @node: current node
+* @idx: index of @node
+* @args: arguments:
+* args[0] = llist_t *tx_inputs
+* args[1] = uint32_t balance
+* args[2] = uint32_t idx
+* args[3] = uint8_t tx_id[SHA256_DIGEST_LENGTH]
+* Return: 0 on success, 1 on failure
 */
-int select_unspent_transaction(llist_node_t node, unsigned int idx, void *args)
+int cmp_tr_ins(llist_node_t node, unsigned int idx, void *args)
 {
-	unspent_tx_out_t *unspent = node; /* Unspent transaction output */
-	void **ptr = args;/* Array of arguments */
-	/* Pointer to the index of the current transaction input */
-	uint32_t *tx_in_idx = ptr[2];
-	uint32_t *balance = ptr[1]; /*Pointer to the current balance */
-	llist_t *list = ptr[0]; /* List of transaction inputs */
-	/*Current transaction input */
+	unspent_tx_out_t *unspent = node;
+	void **ptr = args;
+	uint32_t *tx_in_idx = ptr[2], *balance = ptr[1];
+	llist_t *list = ptr[0];
 	tx_in_t *tx_in = llist_get_node_at(list, *tx_in_idx);
-	EC_KEY *key; /* Public key */
-	/**
-	* printf("ptr[0] (transaction entry list): %p\n", ptr[0]);
-	* printf("ptr[1] (Balance): %u\n", *(uint32_t *)ptr[1]);
-	* printf("ptr[2] (input transaction id): %u\n", *(uint32_t *)ptr[2]);
-	* printf("ptr[3] (transaction ID): %p\n", ptr[3]);
-	*/
-	(void)idx;/* Avoid the warning "unused parameter" */
-	/* Check if the unspent transaction matches the transaction input */
+	EC_KEY *key;
+
+	(void)idx;
 	if (!tx_in)
 		return (1);
-
 	if (!memcmp(unspent->out.hash, tx_in->tx_out_hash, SHA256_DIGEST_LENGTH))
 	{
-		/* Increment the index and balance */
 		*tx_in_idx += 1;
-		/* Update the balance */
 		*balance += unspent->out.amount;
-		/* Create a new transaction input */
 		key = ec_from_pub(unspent->out.pub);
-		/* Check if the public key is valid */
 		if (!key)
 			return (1);
-		/* Verify the signature of the transaction input */
 		if (!ec_verify(key, ptr[3], SHA256_DIGEST_LENGTH, &tx_in->sig))
 		{
 			EC_KEY_free(key);
@@ -58,29 +42,23 @@ int select_unspent_transaction(llist_node_t node, unsigned int idx, void *args)
 }
 
 /**
-* verify_output_amounts - Verifies if the total output amounts are valid.
-* @node: Pointer to the current node containing the transaction output.
-* @idx: Index of the current node (unused).
-* @arg: Pointer to the remaining balance to be checked.
-* Return: 0 on success (valid output amounts), 1 on failure (invalid amounts).
+* check_amounts - check if input transaction and output transactions match
+* @node: current node
+* @idx: index of @node
+* @arg: balance
+* Return: 0 on success, 1 on failure
 */
-int verify_output_amounts(llist_node_t node, unsigned int idx, void *arg)
+int check_amounts(llist_node_t node, unsigned int idx, void *arg)
 {
-	/* Cast the argument to a pointer to the remaining balance */
-	uint32_t *balance = (uint32_t *)arg;
-	/* Cast the node to a pointer to the transaction output */
-	tx_out_t *out = (tx_out_t *)node;
+	uint32_t *balance = arg;
+	tx_out_t *out = node;
 
-	(void)idx;/* Avoid the warning "unused parameter" */
-
-	/* Check if the remaining balance is less than the output amount */
+	(void)idx;
 	if (*balance < out->amount)
+	{
 		return (1);
-
-	/* Deduct the output amount from the remaining balance */
+	}
 	*balance -= out->amount;
-
-	/* Output amount is valid, continue processing */
 	return (0);
 }
 
@@ -91,37 +69,32 @@ int verify_output_amounts(llist_node_t node, unsigned int idx, void *arg)
 * Return: 1 if valid, 0 otherwise
 */
 int transaction_is_valid(transaction_t const *transaction,
-							llist_t *all_unspent)
+						 llist_t *all_unspent)
 {
 	uint8_t hash_buf[SHA256_DIGEST_LENGTH];
-	void *args[4]; /* Array of arguments */
-	uint32_t idx = 0; /* Index of the current transaction input */
-	uint32_t input_amount = 0; /* Total input amount */
+	void *args[4];
+	uint32_t idx = 0;
+	uint32_t total_input = 0;
 
 	if (!transaction || !all_unspent)
 		return (0);
-	/* Compute the hash of the transaction */
-	if (!transaction_hash(transaction, hash_buf))
-		return (0);
-	/* Compare the computed hash with the transaction ID */
+	transaction_hash(transaction, hash_buf);
 	if (memcmp(transaction->id, hash_buf, SHA256_DIGEST_LENGTH))
 	{
 		return (0);
 	}
-	/* Select unspent transactions that match the transaction inputs */
-	args[0] = transaction->inputs, args[1] = &input_amount;
+	args[0] = transaction->inputs, args[1] = &total_input;
 	args[2] = &idx, args[3] = (void *)&transaction->id;
-	/* Verify the transaction inputs */
-	if (llist_for_each(all_unspent, select_unspent_transaction, args)
+	if (llist_for_each(all_unspent, cmp_tr_ins, args)
 		|| idx != (uint32_t)llist_size(transaction->inputs))
 	{
 		return (0);
 	}
-	/* Verify the transaction outputs */
-	if (llist_for_each(transaction->outputs, verify_output_amounts, &input_amount)
-		|| input_amount != 0)
+	if (llist_for_each(transaction->outputs, check_amounts, &total_input)
+		|| total_input != 0)
 	{
 		return (0);
 	}
 	return (1);
 }
+
