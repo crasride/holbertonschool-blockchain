@@ -25,11 +25,6 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	if (!block)
 		return (NULL);
 
-	/* Initialize the block's transaction list */
-	block->transactions = llist_create(MT_SUPPORT_FALSE);
-	if (!block->transactions)
-		return (free(block), NULL);
-
 	/* Set the block's info */
 	memcpy(block->data.buffer, data, max_len);
 	block->data.len = max_len;
@@ -38,5 +33,7 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	memcpy(block->info.prev_hash, prev->hash, SHA256_DIGEST_LENGTH);
 	block->info.index = prev->info.index + 1;
 	block->info.timestamp = (uint64_t)time(NULL);
+	/* Initialize the block's transaction list Tasks 10*/
+	block->transactions = llist_create(MT_SUPPORT_FALSE);
 	return (block);
 }
