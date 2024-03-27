@@ -25,9 +25,8 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	if (!block)
 		return (NULL);
 
-	/* Initialize transaction list */
-	block->transactions = NULL;
-
+	/* Initialize the block's transaction list */
+	block->transactions = llist_create(MT_SUPPORT_FALSE);
 	if (!block->transactions)
 		return (free(block), NULL);
 
