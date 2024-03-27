@@ -1,26 +1,30 @@
 #include "blockchain.h"
 
 /**
-* check_unspent - Check if all transactions are valid
+* validate_transactions - Check if all transactions are valid
 * @block: Pointer to the Block to check
 * @unspent: List of unspent transactions
 * Return: 0 if all transactions are valid, otherwise -1
 */
 
-int check_unspent(block_t const *block, llist_t *unspent)
+int validate_transactions(block_t const *block, llist_t *unspent)
 {
 	int i;
 	transaction_t *node;
 
+	/* Loop through all transactions in the block */
 	for (i = 0; i < llist_size(block->transactions); i++)
 	{
+		/* Get the transaction */
 		node = llist_get_node_at(block->transactions, i);
+		/* Check if the coinbase transaction is valid */
 		if (i == 0 && !coinbase_is_valid(node, block->info.index))
 			return (-1);
+		/* Check if the transaction is valid */
 		if (i > 0 && !transaction_is_valid(node, unspent))
 			return (-1);
 	}
-	/* 'i' stucked at 0 means no transactions in block -> Bad */
+	/* Return 0 if all transactions are valid -1 if there are no transactions */
 	if (i == 0)
 		return (-1);
 	return (0);
@@ -79,8 +83,8 @@ int block_is_valid(block_t const *block, block_t const *prev_block,
 	/* Check if the hash matches the difficulty */
 	if (!hash_matches_difficulty(block->hash, block->info.difficulty))
 		return (1);
-
-	if (check_unspent(block, all_unspent) == -1)
+	/* Check if all transactions are valid */
+	if (validate_transactions(block, all_unspent) == -1)
 		return (1);
 
 	return (0);
