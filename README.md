@@ -233,7 +233,70 @@ This mechanism aims to maintain a relatively stable block production rate regard
 
 <h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/blockchain/v0.3"> 👉 4. Transactions</a></h2>
 
-* in progress
+
+<details>
+<summary>How to build a transaction</summary>
+<br>
+
+A transaction is typically built by specifying inputs, outputs, and additional data such as transaction fees and signatures. Inputs refer to the sources of funds (`previous transaction outputs`) being spent, while outputs specify where the funds are being sent. The transaction is then signed using `cryptographic signatures` to prove ownership of the `inputs`.
+
+</details>
+
+<details>
+<summary>What is a transaction input</summary>
+<br>
+
+A transaction input refers to the source of funds in a transaction. It typically includes a reference to a previous transaction output (`UTXO or account balance`) that is being spent and a cryptographic signature to authorize the spending.
+
+</details>
+
+<details>
+<summary>What is a transaction output</summary>
+<br>
+
+A transaction output represents the destination of funds in a transaction. It specifies the amount of cryptocurrency being transferred and the recipient's address. Outputs are created by spenders and can subsequently be used as inputs in future transactions.
+
+</details>
+
+<details>
+<summary>Why to sign a transaction input</summary>
+<br>
+
+Signing a transaction input is crucial for proving ownership and authorizing the spending of funds. The signature ensures that only the rightful owner of the funds can spend them, adding security and preventing unauthorized transactions.
+
+</details>
+
+<details>
+<summary>How to compute the balance of given wallet</summary>
+<br>
+
+The balance of a wallet can be computed by summing the values of all unspent transaction outputs (`UTXOs`) associated with the wallet's address(es). This involves scanning the blockchain for relevant transactions and filtering out spent outputs.
+
+</details>
+
+<details>
+<summary>What is a coinbase transaction and why it is used</summary>
+<br>
+
+A coinbase transaction is a special type of transaction that creates new coins, also known as mining rewards. It is included by miners in new blocks they create and serves as the first transaction in a block. The coinbase transaction allows miners to claim a reward for their mining efforts.
+
+</details>
+
+<details>
+<summary>How to ensure immutability of a transaction</summary>
+<br>
+
+`Immutability` of a `transaction `is ensured by incorporating cryptographic hashing techniques. Once a `transaction`is created and included in a block, it is cryptographically hashed along with other data in the block header. Any attempt to alter the `transaction `or the block would result in a change in the hash, which can be easily detected by network participants.
+
+</details>
+
+<details>
+<summary>What is the difference between the UTXO and the Account-based transaction models</summary>
+<br>
+
+In the UTXO (`Unspent Transaction Output`) model, transactions consume and create UTXOs, representing unspent amounts of cryptocurrency. Each transaction input refers to a specific `UTXO` being spent. In contrast, the account-based model maintains account balances, where transactions update balances in accounts directly. Ethereum primarily uses the account-based model, while Bitcoin and some other cryptocurrencies use the `UTXO` model.
+
+</details>
 
 <h2 align="center"><a href=""> 👉 5. CLI</a></h2>
 
