@@ -25,6 +25,9 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	if (!block)
 		return (NULL);
 
+	/* Initialize the block's transaction list Tasks 10*/
+	block->transactions = llist_create(MT_SUPPORT_FALSE);
+
 	/* Set the block's info */
 	memcpy(block->data.buffer, data, max_len);
 	block->data.len = max_len;
