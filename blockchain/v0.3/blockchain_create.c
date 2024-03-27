@@ -46,7 +46,5 @@ blockchain_t *blockchain_create(void)
 	/* Add the genesis block to the blockchain */
 	llist_add_node(blockchain->chain, genesis_block, ADD_NODE_FRONT);
 
-	
-
 	return (blockchain);
 }
