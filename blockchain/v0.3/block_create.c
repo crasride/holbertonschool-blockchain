@@ -15,8 +15,6 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	/* Get the minimum of data_len and BLOCKCHAIN_DATA_MAX */
 	uint32_t max_len = data_len > BLOCKCHAIN_DATA_MAX ?
 		BLOCKCHAIN_DATA_MAX : data_len;
-	/* Create a new linked list for the transactions */
-	llist_t *transactions = llist_create(MT_SUPPORT_FALSE);
 
 	/* Check if the previous block and data pointers are NULL */
 	if (!prev || !data)
@@ -27,8 +25,12 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	if (!block)
 		return (NULL);
 
-	if (!block || !transactions)
-		return (free(block), llist_destroy(transactions, 0, NULL), NULL);
+	/* Initialize the block task 10 v0.3*/
+	block->transactions = llist_create(MT_SUPPORT_FALSE);
+
+	/* Check if the block's transactions is NULL task 10 v0.3*/
+	if (!block->transactions)
+		return (free(block), NULL);
 
 	/* Set the block's info */
 	memcpy(block->data.buffer, data, max_len);
@@ -38,6 +40,5 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	memcpy(block->info.prev_hash, prev->hash, SHA256_DIGEST_LENGTH);
 	block->info.index = prev->info.index + 1;
 	block->info.timestamp = (uint64_t)time(NULL);
-	block->transactions = transactions;
 	return (block);
 }
