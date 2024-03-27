@@ -6,7 +6,7 @@
 */
 void block_destroy(block_t *block)
 {
-	/* Destroy the block's transactions */
-	llist_destroy(block->transactions, 1, (node_dtor_t)transaction_destroy);
-	free(block);
+	/* Check if the block pointer is NULL */
+	if (block)
+		free(block);
 }
