@@ -9,11 +9,8 @@ void block_destroy(block_t *block)
 	/* Check if the block pointer is NULL */
 	if (!block)
 		return;
-
 	/* Destroy the transaction list */
-	if (block->transactions)
-		llist_destroy(block->transactions, 1, (node_dtor_t)transaction_destroy);
-
+	llist_destroy(block->transactions, 1, (node_dtor_t)transaction_destroy);
 	/* Free the block */
 	free(block);
 }
