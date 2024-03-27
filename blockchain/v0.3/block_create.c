@@ -1,20 +1,18 @@
 #include "blockchain.h"
 
 /**
-* block_create - Creates a Block structure and initializes it
-* @prev: Pointer to the previous Block in the Blockchain
-* @data: Points to a memory area to duplicate in the Block’s data
-* @data_len: Number of bytes to duplicate in data
-*
-* Return: A pointer to the allocated Block
-*/
+ * block_create - Creates a Block structure and initializes it
+ * @prev: Pointer to the previous Block in the Blockchain
+ * @data: Points to a memory area to duplicate in the Block’s data
+ * @data_len: Number of bytes to duplicate in data
+ *
+ * Return: A pointer to the allocated Block
+ */
 block_t *block_create(block_t const *prev, int8_t const *data,
-															uint32_t data_len)
+					uint32_t data_len)
 {
 	block_t *block; /* Block to create */
-	/* Get the minimum of data_len and BLOCKCHAIN_DATA_MAX */
-	uint32_t max_len = data_len > BLOCKCHAIN_DATA_MAX ?
-		BLOCKCHAIN_DATA_MAX : data_len;
+	uint32_t max_len; /* Maximum length of data to copy */
 
 	/* Check if the previous block and data pointers are NULL */
 	if (!prev || !data)
@@ -25,22 +23,23 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	if (!block)
 		return (NULL);
 
-	/* Initialize the block task 10 v0.3*/
+	/* Initialize the Block's transaction list to an empty linked list */
 	block->transactions = llist_create(MT_SUPPORT_FALSE);
-
-	/* Check if the block's transactions is NULL task 10 v0.3*/
 	if (!block->transactions)
-		return (free(block), NULL);
+	{
+		free(block);
+		return (NULL);
+	}
 
-	/* Set the block's info */
-	memcpy(block->data.buffer, data, max_len);
-	block->data.len = max_len;
-
-	/* Set the block's info */
+	/* Set the block's information */
 	memcpy(block->info.prev_hash, prev->hash, SHA256_DIGEST_LENGTH);
 	block->info.index = prev->info.index + 1;
 	block->info.timestamp = (uint64_t)time(NULL);
+
+	/* Copy the provided data to the block's data */
+	max_len = data_len > BLOCKCHAIN_DATA_MAX ? BLOCKCHAIN_DATA_MAX : data_len;
+	memcpy(block->data.buffer, data, max_len);
+	block->data.len = max_len;
+
 	return (block);
 }
-
-
