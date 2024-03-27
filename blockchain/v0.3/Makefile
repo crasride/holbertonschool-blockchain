@@ -1,33 +1,19 @@
-# Compiler and flags
-CC := gcc
-CFLAGS := -Wall -Werror -Wextra -pedantic -std=gnu90 -ggdb3 -I. -Itransaction/ -Iprovided/ -I../../crypto
-LDFLAGS := -L../../crypto -lhblk_crypto -lllist -lssl -lcrypto -pthread
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra -pedantic -std=gnu90 -ggdb3 -c -I. -Itransaction/ -Iprovided/ -I../../crypto -L../../crypto -lhblk_crypto -lllist -lssl -lcrypto -pthread
 
-# Source files and object files
-SRC := $(wildcard *.c) $(wildcard transaction/*.c) $(wildcard provided/*.c)
-OBJ := $(SRC:.c=.o)
+SRC0 = $(wildcard *.c) $(wildcard transaction/*.c) $(wildcard provided/*.c)
+OBJ0 = $(SRC0:.c=.o)
+NAME0 = libhblk_blockchain.a
 
-# Target library
-TARGET := libhblk_blockchain.a
+.PHONY: clean oclean flcean libhblk_blockchain.a
 
-# Phony targets
-.PHONY: all clean
-
-# Default target
-all: $(TARGET)
-
-# Compile source files into object files
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# Build target library
-$(TARGET): $(OBJ)
-	ar rcs $@ $^
-
-# Clean rules
 clean:
-	$(RM) *~ $(OBJ) $(TARGET)
+	$(RM) *~ $(NAME0)
 
-# Dependency rules
-blockchain.o: blockchain.h
-transaction.o: transaction.h
+oclean:
+	$(RM) $(OBJ0)
+
+fclean: clean oclean
+
+libhblk_blockchain.a: blockchain.h transaction/transaction.h $(OBJ0)
+	ar rcs $(NAME0) $(OBJ0)
