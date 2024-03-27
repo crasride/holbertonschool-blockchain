@@ -11,7 +11,7 @@ OBJ := $(SRC:.c=.o)
 TARGET := libhblk_blockchain.a
 
 # Phony targets
-.PHONY: all clean oclean fclean
+.PHONY: all clean
 
 # Default target
 all: $(TARGET)
@@ -26,12 +26,7 @@ $(TARGET): $(OBJ)
 
 # Clean rules
 clean:
-	$(RM) *~ $(TARGET)
-
-oclean:
-	$(RM) $(OBJ)
-
-fclean: clean oclean
+	$(RM) *~ $(OBJ) $(TARGET)
 
 # Dependency rules
 blockchain.o: blockchain.h
