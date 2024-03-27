@@ -11,19 +11,32 @@
 block_t *block_create(block_t const *prev, int8_t const *data,
 															uint32_t data_len)
 {
-	block_t *block;
+	block_t *block; /* Block to create */
+	/* Get the minimum of data_len and BLOCKCHAIN_DATA_MAX */
 	uint32_t max_len = data_len > BLOCKCHAIN_DATA_MAX ?
 		BLOCKCHAIN_DATA_MAX : data_len;
 
+	/* Check if the previous block and data pointers are NULL */
 	if (!prev || !data)
 		return (NULL);
+
+	/* Allocate memory for the new block */
 	block = calloc(1, sizeof(*block));
 	if (!block)
 		return (NULL);
 
+	/* Initialize the block task 10 v0.3*/
+	block->transactions = llist_create(MT_SUPPORT_FALSE);
+
+	/* Check if the block's transactions is NULL task 10 v0.3*/
+	if (!block->transactions)
+		return (free(block), NULL);
+
+	/* Set the block's info */
 	memcpy(block->data.buffer, data, max_len);
 	block->data.len = max_len;
 
+	/* Set the block's info */
 	memcpy(block->info.prev_hash, prev->hash, SHA256_DIGEST_LENGTH);
 	block->info.index = prev->info.index + 1;
 	block->info.timestamp = (uint64_t)time(NULL);
