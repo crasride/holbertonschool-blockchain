@@ -1,36 +1,37 @@
 #include "blockchain.h"
-#include <time.h>
 
 /**
- * block_create - Creates a block structure and init it
- * @prev: pointer to the previous Block in chain
- * @data: points to memory area to duplicate in Block's data
- * @data_len: stores number of bytes to dup in data
- * -> constraint : must not overflow macro BLOCKCHAIN_DATA_MAX
- * otherwise BLOCKCHAIN_DATA_MAX must be duplicated instead
- *
- * -- Update Inserted --
- * Now init the Block's transaction list ot an empty linked list (l.32)
- *
- * Return: Pointer to newly allocated Block
- */
-
+* block_create - Creates a Block structure and initializes it
+* @prev: Pointer to the previous Block in the Blockchain
+* @data: Points to a memory area to duplicate in the Block’s data
+* @data_len: Number of bytes to duplicate in data
+*
+* Return: A pointer to the allocated Block
+*/
 block_t *block_create(block_t const *prev, int8_t const *data,
-				uint32_t data_len)
+															uint32_t data_len)
 {
-	block_t *new = calloc(1, sizeof(*new));
+	block_t *block; /* Block to create */
+	/* Get the minimum of data_len and BLOCKCHAIN_DATA_MAX */
+	uint32_t max_len = data_len > BLOCKCHAIN_DATA_MAX ?
+		BLOCKCHAIN_DATA_MAX : data_len;
 
-	if (!new)
+	/* Check if the previous block and data pointers are NULL */
+	if (!prev || !data)
 		return (NULL);
 
-	new->info.index = prev->info.index + 1;
-	new->info.difficulty = new->info.nonce = 0;
-	new->info.timestamp = time(NULL);
-	memcpy(&(new->info.prev_hash), prev->hash, SHA256_DIGEST_LENGTH);
-	memcpy(&(new->data.buffer), data, MIN(data_len, BLOCKCHAIN_DATA_MAX));
-	new->data.len = MIN(data_len, BLOCKCHAIN_DATA_MAX);
-	new->transactions = llist_create(MT_SUPPORT_FALSE);
-	memset(&(new->hash), 0x0, SHA256_DIGEST_LENGTH);
+	/* Allocate memory for the new block */
+	block = calloc(1, sizeof(*block));
+	if (!block)
+		return (NULL);
 
-	return (new);
+	/* Set the block's info */
+	memcpy(block->data.buffer, data, max_len);
+	block->data.len = max_len;
+
+	/* Set the block's info */
+	memcpy(block->info.prev_hash, prev->hash, SHA256_DIGEST_LENGTH);
+	block->info.index = prev->info.index + 1;
+	block->info.timestamp = (uint64_t)time(NULL);
+	return (block);
 }
