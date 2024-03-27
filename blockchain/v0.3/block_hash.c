@@ -27,13 +27,6 @@ uint8_t *block_hash(block_t const *block,
 										uint8_t hash_buf[SHA256_DIGEST_LENGTH])
 {
 	/*
-	* Check if the block transactions list is NULL
-	* If it's NULL, return NULL indicating an error
-	*/
-	if (block->transactions == NULL)
-		return (NULL);
-
-	/*
 	* Calculate the total length of data to hash, including block info and
 	* transaction IDs
 	*/
