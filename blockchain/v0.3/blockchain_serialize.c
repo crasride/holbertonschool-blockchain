@@ -9,41 +9,38 @@
 */
 int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 {
-	int fd, number_of_blocks = 0;
-	int idx;
-	/* Get the endianness of the machine */
-	uint8_t endian = _get_endianness();
+	int fd, i, number_of_blocks;
+	uint8_t endianness = _get_endianness();
 
-	/* Check if blockchain and path are not NULL */
-	if (!blockchain || !path)
+	if (!blockchain || !blockchain->chain || !path)
 		return (-1);
-
-	/* Open file */
-	fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	number_of_blocks = llist_size(blockchain->chain);
+	fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
 	if (fd == -1)
 		return (-1);
-
-	/* Get the number of blocks in the chain */
-	number_of_blocks = llist_size(blockchain->chain);
-
-	/* Write file header */
-	write(fd, HBLK_MAGIC, strlen(HBLK_MAGIC));
-	write(fd, HBLK_VERSION, strlen(HBLK_VERSION));
-	write(fd, &endian, sizeof(endian));
-	write(fd, &number_of_blocks, sizeof(number_of_blocks));
-
-	/* Write block data */
-	for (idx = 0; idx < number_of_blocks; idx++)
+	if (write(fd, HBLK_MAGIC, strlen(HBLK_MAGIC)) != strlen(HBLK_MAGIC))
+		return (close(fd), -1);
+	if (write(fd, HBLK_VERSION, strlen(HBLK_VERSION)) != strlen(HBLK_VERSION))
+		return (close(fd), -1);
+	if (write(fd, &endianness, 1) != 1)
+		return (close(fd), -1);
+	if (write(fd, &number_of_blocks, 4) != 4)
+		return (close(fd), -1);
+	for (i = 0; i < number_of_blocks; i++)
 	{
-		/* Get the block */
-		block_t *block = llist_get_node_at(blockchain->chain, idx);
+		block_t *block = llist_get_node_at(blockchain->chain, i);
 
-		write(fd, &(block->info), sizeof(block->info));
-		write(fd, &block->data.len, sizeof(block->data.len));
-		write(fd, block->data.buffer, block->data.len);
-		write(fd, block->hash, SHA256_DIGEST_LENGTH);
+		if (!block)
+			return (close(fd), -1);
+		if (write(fd, &(block->info), sizeof(block->info)) != sizeof(block->info))
+			return (close(fd), -1);
+		if (write(fd, &(block->data.len), 4) != 4)
+			return (close(fd), -1);
+		if (write(fd, block->data.buffer, block->data.len) != block->data.len)
+			return (close(fd), -1);
+		if (write(fd, block->hash, SHA256_DIGEST_LENGTH) !=
+			SHA256_DIGEST_LENGTH)
+			return (close(fd), -1);
 	}
-
-	close(fd);
-	return (0);
+	return (close(fd), 0);
 }
