@@ -9,12 +9,11 @@ uint8_t _get_endianness(void);
 * @fd: file descriptor
 * Return: Nothing
 * Transactions are serialized as a table described:
-* -- Transaction ID (hash)
-* -- Number of tx inputs
-*		|__ list of tx inputs -- input "node" * 169 bytes
-* -- Number of tx outputs
-*		|__ list of tx outputs -- output "node" * 101 bytes
-* -- Then jump back to `blockchain_serialize` to finally fwrite the utxo's
+*                       Transaction ID (hash) Table
+* Offset Size (bytes)                        Field           Purpose
+* 0x28   169 * nb\_inputs                    inputs   List transaction  inputs
+* 0x28 + 169 * nb\_inputs 101 * nb\_outputs  outputs  List transaction  outputs
+*
 */
 void write_transactions(llist_t *transactions, int fd)
 {
