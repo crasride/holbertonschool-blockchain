@@ -78,9 +78,8 @@ int blockchain_serialize(blockchain_t const *blockchain,
 	block_t *block;
 	unspent_tx_out_t *unspent_node;
 	int tx_size = 0;
-	int fd;
 
-	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	fp = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (!fp || !blockchain || !path)
 		return (-1);
 
