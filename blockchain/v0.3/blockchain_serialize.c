@@ -56,8 +56,8 @@ void header_init(block_header_t *header)
 	if (!header)
 		return;
 
-	strncpy(header->magic, HBLK_MAGIC, sizeof(header->magic));
-	strncpy(header->version, HBLK_VERSION, sizeof(header->version));
+	memcpy(header->magic, "HBLK", 4);
+	memcpy(header->version, "0.3", 3);
 	header->endian = _get_endianness();
 	header->blocks = 0;
 	header->unspent = 0;
