@@ -1,88 +1,112 @@
 #include "blockchain.h"
 
 /**
-* convert_endianness - converts endianness of a block
-* @block: a blockchain block
-*/
-void convert_endianness(block_t *block)
-{
-	_swap_endian(&block->info.index, sizeof(block->info.index));
-	_swap_endian(&block->info.difficulty, sizeof(block->info.difficulty));
-	_swap_endian(&block->info.timestamp, sizeof(block->info.timestamp));
-	_swap_endian(&block->info.nonce, sizeof(block->info.nonce));
-}
+ * fread_transactions - read the transactions in blocks
+ * @block: Pointer to the Blocks of Blockchain
+ * @fr: File stream to read from
+ */
 
-/**
-* read_blocks - read blocks from a file
-* @fp: file pointer
-* @swap_endian: a flag to swap endianness
-* @blockchain: blockchain
-* @size: number of blocks to read
-* Return: 0 if successful, -1 if failed
-*/
-int read_blocks(FILE *fp, uint8_t swap_endian,
-				blockchain_t *blockchain, int size)
+void fread_transactions(block_t *block, FILE *fr)
 {
-	int i;
-	block_t *block;
-	uint32_t data_len;
-	long int genesis_size;
+	int32_t i, j, tx_size, tx_in, tx_out;
+	transaction_t *t_node;
+	tx_in_t *in_node;
+	tx_out_t *out_node;
 
-	genesis_size = sizeof(block->info) + sizeof(block->hash) + 20L;
-	fseek(fp, genesis_size, SEEK_CUR);
-	for (i = 0; i < size - 1; ++i)
+	fread(&tx_size, 4, 1, fr);
+	if (tx_size == -1)
 	{
-		block = malloc(sizeof(*block));
-		if (!block)
-			return (-1);
-		fread(&block->info, sizeof(block->info), 1, fp);
-		fread(&data_len, sizeof(data_len), 1, fp);
-		if (swap_endian)
-			_swap_endian(&data_len, sizeof(data_len));
-		fread(&block->data.buffer, data_len, 1, fp);
-		fread(&block->hash, SHA256_DIGEST_LENGTH, 1, fp);
-		if (swap_endian)
-			convert_endianness(block);
-		block->data.len = data_len;
-		*(block->data.buffer + data_len) = '\0';
-		llist_add_node(blockchain->chain, block, ADD_NODE_REAR);
+		block->transactions = NULL;
+		return;
 	}
-	return (0);
+	block->transactions = llist_create(MT_SUPPORT_FALSE);
+	for (i = 0; i < tx_size; i++)
+	{
+		t_node = malloc(sizeof(transaction_t));
+		t_node->inputs = llist_create(MT_SUPPORT_FALSE);
+		t_node->outputs = llist_create(MT_SUPPORT_FALSE);
+		fread(&t_node->id, 32, 1, fr);
+		/* Read nb inputs & outputs */
+		fread(&tx_in, 4, 1, fr);
+		fread(&tx_out, 4, 1, fr);
+		for (j = 0; j < tx_in; j++)
+		{
+			in_node = malloc(sizeof(tx_in_t));
+			fread(in_node, 169, 1, fr);
+			llist_add_node(t_node->inputs, in_node, ADD_NODE_REAR);
+		}
+		for (j = 0; j < tx_out; j++)
+		{
+			out_node = malloc(sizeof(tx_out_t));
+			fread(out_node, 101, 1, fr);
+			llist_add_node(t_node->outputs, out_node, ADD_NODE_REAR);
+		}
+		llist_add_node(block->transactions, t_node, ADD_NODE_REAR);
+	}
 }
 
 /**
-* blockchain_deserialize - load blockchain
-* @path: file to read
-* Return: loaded blockchain, NULL if failed
-*/
+ * check_header - check the header validity format
+ * @header: Pointer to header struct
+ * Return: 1 if valid, 0 otherwise
+ */
+
+int check_header(block_header_t *header)
+{
+	if (memcmp(header->magic, HBLK_MAGIC, 4) ||
+		(memcmp(header->version, HBLK_VERSION, 3)))
+		return (0);
+	return (1);
+}
+
+/**
+ * blockchain_deserialize - Deserializes (load) Bchain
+ * from a file provided in 'path'
+ * @path: path to the file to load the serialized Bchain from
+ *
+ * Return: Pointer to deserialized Bchain on Success, NULL Failure
+ */
+
 blockchain_t *blockchain_deserialize(char const *path)
 {
-	FILE *fp;
-	hblk_file_t header;
-	blockchain_t *blockchain;
-	int size;
-	uint8_t swap_endian;
+	FILE *fr;
+	blockchain_t *bchain;
+	block_t *block;
+	uint32_t i;
+	block_header_t header;
+	unspent_tx_out_t *utxo;
 
-	if (!path)
+	fr = fopen(path, "rb");
+	if (!fr || !path)
 		return (NULL);
-	if (access(path, R_OK) == -1)
+
+	fread(&header, sizeof(header), 1, fr);
+	if (!check_header(&header) || &header.blocks == 0)
+	{
+		fclose(fr);
 		return (NULL);
-	fp = fopen(path, "r");
-	if (!fp)
-		return (NULL);
-	fread(&header, sizeof(header), 1, fp);
-	if (memcmp(header.hblk_magic, "HBLK", 4) ||
-		memcmp(header.hblk_version, "0.1", 3))
-		return (fclose(fp), NULL);
-	blockchain = blockchain_create();
-	if (!blockchain)
-		return (fclose(fp), NULL);
-	swap_endian = _get_endianness() != header.hblk_endian;
-	size = header.hblk_blocks;
-	if (swap_endian)
-		_swap_endian(&size, sizeof(size));
-	if (read_blocks(fp, swap_endian, blockchain, size) == -1)
-		return (blockchain_destroy(blockchain), fclose(fp), NULL);
-	fclose(fp);
-	return (blockchain);
+	}
+
+	bchain = malloc(sizeof(blockchain_t));
+	bchain->chain = llist_create(MT_SUPPORT_FALSE);
+	bchain->unspent = llist_create(MT_SUPPORT_FALSE);
+	for (i = 0; i < header.blocks; i++)
+	{
+		block = malloc(sizeof(block_t));
+		fread(block, 1, sizeof(block->info), fr);
+		fread(&block->data.len, 1, 4, fr);
+		memset(block->data.buffer, 0, 1024);
+		fread(&block->data.buffer, 1, block->data.len, fr);
+		fread(&block->hash, 32, 1, fr);
+		fread_transactions(block, fr);
+		llist_add_node(bchain->chain, block, ADD_NODE_REAR);
+	}
+	for (i = 0; i < header.unspent; i++)
+	{
+		utxo = malloc(sizeof(unspent_tx_out_t));
+		fread(utxo, 165, 1, fr);
+		llist_add_node(bchain->unspent, utxo, ADD_NODE_REAR);
+	}
+	fclose(fr);
+	return (bchain);
 }

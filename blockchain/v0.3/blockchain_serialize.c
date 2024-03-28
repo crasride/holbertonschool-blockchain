@@ -1,55 +1,121 @@
 #include "blockchain.h"
+#include "./provided/endianness.h"
+
+uint8_t _get_endianness(void);
 
 /**
-* write_block - function which writes a single block into @arg
-* @ptr: pointer to a block
-* @idx: index of a block
-* @arg: file pointer
-* Return: 0 if successful, -1 if failed
-*/
-int write_block(llist_node_t ptr, unsigned int idx, void *arg)
-{
-	FILE *fp;
-	block_t *block = ptr;
+ * fwrite_transactions - serialize the transactions to the file "path"
+ * @transactions: Points to Linked list of transactions
+ * @fp: file stream pointer
+ * Return: Nothing
+ * TRansactions are serialized as table described:
+ * -- Transaction ID (hash)
+ * -- Number of tx inputs
+ *		|__ list of tx inputs -- input "node" * 169 bytes
+ * -- Number ox tx outputs
+ *		|__ list of tx outputs -- output "node" * 101 bytes
+ * -- Then jump back to `blockchain_serialize` to finally fwrite the utxo's
+ */
 
-	UNUSED(idx);
-	if (!arg || !ptr)
-		return (-1);
-	fp = (FILE *)arg;
-	fwrite((void *)&block->info, sizeof(block->info), 1, fp);
-	fwrite((void *)&block->data.len, sizeof(block->data.len), 1, fp);
-	fwrite(block->data.buffer, block->data.len, 1, fp);
-	fwrite(block->hash, sizeof(block->hash), 1, fp);
-	return (0);
+void fwrite_transactions(llist_t *transactions, FILE *fp)
+{
+	int i, j, tx_in, tx_out;
+	transaction_t *t_node;
+	tx_in_t *in_node;
+	tx_out_t *out_node;
+
+	for (i = 0; i < llist_size(transactions); i++)
+	{
+		t_node = llist_get_node_at(transactions, i);
+		tx_in = llist_size(t_node->inputs);
+		tx_out = llist_size(t_node->outputs);
+		fwrite(&t_node->id, SHA256_DIGEST_LENGTH, 1, fp);
+		fwrite(&tx_in, 4, 1, fp);
+		fwrite(&tx_out, 4, 1, fp);
+		/* Now list of tx_inputs => 169 times number of inputs */
+		for (j = 0; j < tx_in; j++)
+		{
+			in_node = llist_get_node_at(t_node->inputs, j);
+			fwrite(in_node, 169, 1, fp);
+		}
+		/* Same for list of outputs => 101 times number of outputs */
+		for (j = 0; j < tx_out; j++)
+		{
+			out_node = llist_get_node_at(t_node->outputs, j);
+			fwrite(out_node, 101, 1, fp);
+		}
+	}
 }
 
 /**
-* blockchain_serialize - function which writes a blockchain into a file
-* @blockchain: blockchain to be serialized
-* @path: path to the a file
-* Return: 0 if successful, -1 if failed
-*/
-int blockchain_serialize(blockchain_t const *blockchain, char const *path)
-{
-	hblk_file_t header;
-	FILE *fp;
+ * header_init - Initialize the header_t struct
+ * @header: Pointer to block_header struct
+ */
 
-	if (!blockchain || !path)
+void header_init(block_header_t *header)
+{
+	header->magic[0] = 'H';
+	header->magic[1] = 'B';
+	header->magic[2] = 'L';
+	header->magic[3] = 'K';
+	header->version[0] = '0';
+	header->version[1] = '.';
+	header->version[2] = '3';
+	header->endian = _get_endianness();
+	header->blocks = 0;
+	header->unspent = 0;
+}
+
+/**
+ * blockchain_serialize - serializes a Blockchain into a file
+ * @blockchain: Points to the blockchain to serialize
+ * @path: Contains the path to a file to serialize Blockchain into
+ * must be overwritten if pointing to an existing file
+ * Return: 0 on Success, -1 upon Failure
+ *
+ * -- Update -- Now serializing the Block's transaction list
+ */
+
+int blockchain_serialize(blockchain_t const *blockchain,
+						 char const *path)
+{
+	FILE *fp = NULL;
+	uint32_t i;
+	block_header_t header;
+	block_t *block;
+	unspent_tx_out_t *unspent_node;
+	int tx_size = 0;
+
+	fp = fopen(path, "wb");
+	if (!fp || !blockchain || !path)
 		return (-1);
-	memcpy(header.hblk_magic, "HBLK", 4);
-	memcpy(header.hblk_version, "0.3", 3);
-	header.hblk_endian = _get_endianness();
-	header.hblk_blocks = llist_size(blockchain->chain);
-	if (header.hblk_blocks == -1)
-		return (-1);
-	fp = fopen(path, "w");
-	if (!fp)
-		return (-1);
+
+	header_init(&header);
+	header.blocks = llist_size(blockchain->chain);
+	header.unspent = llist_size(blockchain->unspent);
 	fwrite(&header, sizeof(header), 1, fp);
-	if (llist_for_each(blockchain->chain, write_block, fp) == -1)
+
+	for (i = 0; i < header.blocks; i++)
 	{
-		fclose(fp);
-		return (-1);
+		block = llist_get_node_at(blockchain->chain, i);
+		fwrite(block, 1, sizeof(block->info), fp);
+		fwrite(&block->data.len, sizeof(block->data.len), 1, fp);
+		fwrite(&block->data.buffer, block->data.len, 1, fp);
+		fwrite(&block->hash, SHA256_DIGEST_LENGTH, 1, fp);
+		/* If we are on genesis block */
+		if (block->info.index == 0)
+			tx_size = -1;
+		else
+			tx_size = llist_size(block->transactions);
+		fwrite(&tx_size, 1, 4, fp);
+		fwrite_transactions(block->transactions, fp);
+	}
+	/* Unspent tx output serialized contiguously too */
+	/* First one right after the last serialized Block */
+	for (i = 0; i < header.unspent; i++)
+	{
+		unspent_node = llist_get_node_at(blockchain->unspent, i);
+		fwrite(unspent_node, 165, 1, fp);
 	}
 	fclose(fp);
 	return (0);
