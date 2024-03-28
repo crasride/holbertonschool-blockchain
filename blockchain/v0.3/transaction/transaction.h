@@ -70,6 +70,7 @@ typedef struct unspent_tx_out_s
 	uint8_t     block_hash[SHA256_DIGEST_LENGTH];
 	uint8_t     tx_id[SHA256_DIGEST_LENGTH];
 	tx_out_t    out;
+
 } unspent_tx_out_t;
 
 /* Protypes Functions Porject Blockchain - Transactions */
@@ -110,5 +111,9 @@ int coinbase_is_valid(transaction_t const *coinbase, uint32_t block_index);
 
 /* Functions Task 9*/
 void transaction_destroy(transaction_t *transaction);
+
+/* Functions Task 14*/
+llist_t *update_unspent(llist_t *transactions,
+				uint8_t block_hash[SHA256_DIGEST_LENGTH], llist_t *all_unspent);
 
 #endif /* _TRANSACTION_H_ */
