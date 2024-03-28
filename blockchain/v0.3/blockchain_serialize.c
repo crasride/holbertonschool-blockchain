@@ -4,7 +4,7 @@
 uint8_t _get_endianness(void);
 
 /**
-* fwrite_transactions - serialize the transactions to the file "path"
+* write_transactions - serialize the transactions to the file "path"
 * @transactions: Points to Linked list of transactions
 * @fd: file stream pointer
 * Return: Nothing
@@ -14,9 +14,9 @@ uint8_t _get_endianness(void);
 *		|__ list of tx inputs -- input "node" * 169 bytes
 * -- Number ox tx outputs
 *		|__ list of tx outputs -- output "node" * 101 bytes
-* -- Then jump back to `blockchain_serialize` to finally fwrite the utxo's
+* -- Then jump back to `blockchain_serialize` to finally write the utxo's
 */
-void fwrite_transactions(llist_t *transactions, FILE *fd)
+void write_transactions(llist_t *transactions, FILE *fd)
 {
 	int i, j, tx_in, tx_out;
 	transaction_t *t_node;
@@ -28,20 +28,20 @@ void fwrite_transactions(llist_t *transactions, FILE *fd)
 		t_node = llist_get_node_at(transactions, i);
 		tx_in = llist_size(t_node->inputs);
 		tx_out = llist_size(t_node->outputs);
-		fwrite(&t_node->id, SHA256_DIGEST_LENGTH, 1, fd);
-		fwrite(&tx_in, 4, 1, fd);
-		fwrite(&tx_out, 4, 1, fd);
+		write(fd, &t_node->id, SHA256_DIGEST_LENGTH);
+		write(fd, &tx_in, 4);
+		write(fd, &tx_out, 4);
 		/* Now list of tx_inputs => 169 times number of inputs */
 		for (j = 0; j < tx_in; j++)
 		{
 			in_node = llist_get_node_at(t_node->inputs, j);
-			fwrite(in_node, 169, 1, fd);
+			write(fd, in_node, 169);
 		}
 		/* Same for list of outputs => 101 times number of outputs */
 		for (j = 0; j < tx_out; j++)
 		{
 			out_node = llist_get_node_at(t_node->outputs, j);
-			fwrite(out_node, 101, 1, fd);
+			write(fd, out_node, 101);
 		}
 	}
 }
@@ -86,29 +86,29 @@ int blockchain_serialize(blockchain_t const *blockchain,
 	init_block_header(&header);
 	header.blocks = llist_size(blockchain->chain);
 	header.unspent = llist_size(blockchain->unspent);
-	fwrite(&header, sizeof(header), 1, fd);
+	write(fd, &header, sizeof(header));
 
 	for (i = 0; i < header.blocks; i++)
 	{
 		block = llist_get_node_at(blockchain->chain, i);
-		fwrite(block, 1, sizeof(block->info), fd);
-		fwrite(&block->data.len, sizeof(block->data.len), 1, fd);
-		fwrite(&block->data.buffer, block->data.len, 1, fd);
-		fwrite(&block->hash, SHA256_DIGEST_LENGTH, 1, fd);
+		write(fd, block, sizeof(block->info));
+		write(fd, &block->data.len, sizeof(block->data.len));
+		write(fd, &block->data.buffer, block->data.len);
+		write(fd, &block->hash, SHA256_DIGEST_LENGTH);
 		/* If we are on genesis block */
 		if (block->info.index == 0)
 			tx_size = -1;
 		else
 			tx_size = llist_size(block->transactions);
-		fwrite(&tx_size, 1, 4, fd);
-		fwrite_transactions(block->transactions, fd);
+		write(fd, &tx_size, 4);
+		write_transactions(block->transactions, fd);
 	}
 	/* Unspent tx output serialized contiguously too */
 	/* First one right after the last serialized Block */
 	for (i = 0; i < header.unspent; i++)
 	{
 		unspent_node = llist_get_node_at(blockchain->unspent, i);
-		fwrite(unspent_node, 165, 1, fd);
+		write(fd, unspent_node, 165);
 	}
 	fclose(fd);
 	return (0);
