@@ -1,49 +1,56 @@
 #include "blockchain.h"
 
 /**
-* blockchain_serialize - serializes a Blockchain into a file
-* @blockchain: Points to the blockchain to serialize
-* @path: Contains the path to a file to serialize Blockchain into
-*        must be overwritten if pointing to an existing file
-* Return: 0 on Success, -1 upon Failure
+* write_block - function which writes a single block into @arg
+* @ptr: pointer to a block
+* @idx: index of a block
+* @arg: file pointer
+* Return: 0 if successful, -1 if failed
+*/
+int write_block(llist_node_t ptr, unsigned int idx, void *arg)
+{
+	FILE *fp;
+	block_t *block = ptr;
+
+	UNUSED(idx);
+	if (!arg || !ptr)
+		return (-1);
+	fp = (FILE *)arg;
+	fwrite((void *)&block->info, sizeof(block->info), 1, fp);
+	fwrite((void *)&block->data.len, sizeof(block->data.len), 1, fp);
+	fwrite(block->data.buffer, block->data.len, 1, fp);
+	fwrite(block->hash, sizeof(block->hash), 1, fp);
+	return (0);
+}
+
+/**
+* blockchain_serialize - function which writes a blockchain into a file
+* @blockchain: blockchain to be serialized
+* @path: path to the a file
+* Return: 0 if successful, -1 if failed
 */
 int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 {
-	int fd, number_of_blocks = 0;
-	int idx;
-	/* Get the endianness of the machine */
-	uint8_t endian = _get_endianness();
+	hblk_file_t header;
+	FILE *fp;
 
-	/* Check if blockchain and path are not NULL */
 	if (!blockchain || !path)
 		return (-1);
-
-	/* Open file */
-	fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-	if (fd == -1)
+	memcpy(header.hblk_magic, "HBLK", 4);
+	memcpy(header.hblk_version, "0.3", 3);
+	header.hblk_endian = _get_endianness();
+	header.hblk_blocks = llist_size(blockchain->chain);
+	if (header.hblk_blocks == -1)
 		return (-1);
-
-	/* Get the number of blocks in the chain */
-	number_of_blocks = llist_size(blockchain->chain);
-
-	/* Write file header */
-	write(fd, HBLK_MAGIC, strlen(HBLK_MAGIC));
-	write(fd, HBLK_VERSION, strlen(HBLK_VERSION));
-	write(fd, &endian, sizeof(endian));
-	write(fd, &number_of_blocks, sizeof(number_of_blocks));
-
-	/* Write block data */
-	for (idx = 0; idx < number_of_blocks; idx++)
+	fp = fopen(path, "w");
+	if (!fp)
+		return (-1);
+	fwrite(&header, sizeof(header), 1, fp);
+	if (llist_for_each(blockchain->chain, write_block, fp) == -1)
 	{
-		/* Get the block */
-		block_t *block = llist_get_node_at(blockchain->chain, idx);
-
-		write(fd, &(block->info), sizeof(block->info));
-		write(fd, &block->data.len, sizeof(block->data.len));
-		write(fd, block->data.buffer, block->data.len);
-		write(fd, block->hash, SHA256_DIGEST_LENGTH);
+		fclose(fp);
+		return (-1);
 	}
-
-	close(fd);
+	fclose(fp);
 	return (0);
 }

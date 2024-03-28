@@ -160,5 +160,23 @@ uint32_t blockchain_difficulty(blockchain_t const *blockchain);
 # define BLOCK_GENERATION_INTERVAL 1
 # define DIFFICULTY_ADJUSTMENT_INTERVAL 5
 
+/**
+ * struct hblk_file_s - HBLK file format
+ *
+ * @hblk_magic: magic bytes for HBLK file format
+ * @hblk_version: Blockchain version
+ * @hblk_endian: endianness, 1 is Little endian, 2 is Big endian
+* @hblk_blocks: number of blocks in a blockchain
+ */
+typedef struct hblk_file_s
+{
+	uint8_t hblk_magic[4];
+	uint8_t hblk_version[3];
+	uint8_t hblk_endian;
+	int32_t hblk_blocks;
+} hblk_file_t;
+
+
+
 /* __attribute__((warn_unused_result)); */
 #endif /* _BLOCKCHAIN_H_ */
