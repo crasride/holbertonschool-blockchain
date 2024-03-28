@@ -4,7 +4,7 @@
 uint8_t _get_endianness(void);
 
 /**
-* fwrite_transactions - serialize the transactions to the file descriptor "fd"
+* write_transactions - serialize the transactions to the file descriptor "fd"
 * @transactions: Points to Linked list of transactions
 * @fd: file descriptor
 * Return: Nothing
@@ -16,7 +16,7 @@ uint8_t _get_endianness(void);
 *		|__ list of tx outputs -- output "node" * 101 bytes
 * -- Then jump back to `blockchain_serialize` to finally fwrite the utxo's
 */
-void fwrite_transactions(llist_t *transactions, int fd)
+void write_transactions(llist_t *transactions, int fd)
 {
 	int i, j, tx_in, tx_out;
 	transaction_t *t_node;
@@ -101,7 +101,7 @@ int blockchain_serialize(blockchain_t const *blockchain,
 		else
 			tx_size = llist_size(block->transactions);
 		write(fd, &tx_size, 4);
-		fwrite_transactions(block->transactions, fd);
+		write_transactions(block->transactions, fd);
 	}
 	/* Unspent tx output serialized contiguously too */
 	/* First one right after the last serialized Block */
