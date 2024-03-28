@@ -47,11 +47,10 @@ void fwrite_transactions(llist_t *transactions, FILE *fp)
 }
 
 /**
-* header_init - Initialize the header_t struct
+* init_block_header - initializes a block_header struct
 * @header: Pointer to block_header struct
 */
-
-void header_init(block_header_t *header)
+void init_block_header(block_header_t *header)
 {
 	if (!header)
 		return;
@@ -64,15 +63,12 @@ void header_init(block_header_t *header)
 }
 
 /**
- * blockchain_serialize - serializes a Blockchain into a file
- * @blockchain: Points to the blockchain to serialize
- * @path: Contains the path to a file to serialize Blockchain into
- * must be overwritten if pointing to an existing file
- * Return: 0 on Success, -1 upon Failure
- *
- * -- Update -- Now serializing the Block's transaction list
- */
-
+* blockchain_serialize - serializes a Blockchain into a file
+* @blockchain: Points to the blockchain to serialize
+* @path: Contains the path to a file to serialize Blockchain into
+*        must be overwritten if pointing to an existing file
+* Return: 0 on Success, -1 upon Failure
+*/
 int blockchain_serialize(blockchain_t const *blockchain,
 						 char const *path)
 {
@@ -81,13 +77,13 @@ int blockchain_serialize(blockchain_t const *blockchain,
 	block_header_t header;
 	block_t *block;
 	unspent_tx_out_t *unspent_node;
-	int tx_size = 0;
+	int fd, tx_size = 0;
 
-	fp = fopen(path, "wb");
+	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (!fp || !blockchain || !path)
 		return (-1);
 
-	header_init(&header);
+	init_block_header(&header);
 	header.blocks = llist_size(blockchain->chain);
 	header.unspent = llist_size(blockchain->unspent);
 	fwrite(&header, sizeof(header), 1, fp);
