@@ -8,8 +8,7 @@ uint8_t _get_endianness(void);
 * @transactions: Points to Linked list of transactions
 * @fd: file descriptor
 * Return: Nothing
-* Transactions are serialized as a table described:
-*                       Transaction ID (hash) Table
+*               Transactions are serialized as a table:
 * Offset Size (bytes)                        Field           Purpose
 * 0x28   169 * nb\_inputs                    inputs   List transaction  inputs
 * 0x28 + 169 * nb\_inputs 101 * nb\_outputs  outputs  List transaction  outputs
@@ -83,9 +82,11 @@ void init_block_header(block_header_t *header)
 /**
 * blockchain_serialize - serializes a Blockchain into a file
 * @blockchain: Points to the blockchain to serialize
-* @path: Contains the path to a file to serialize Blockchain into
-*        must be overwritten if pointing to an existing file
+* @path: Path to the file in which to serialize the blockchain
 * Return: 0 on Success, -1 upon Failure
+*            File Header the following table describes the file header
+* Offset    Size (bytes)         Field           Purpose
+* 0x10 + ?  165 * hblk_unspent   unspent...List of unspent transaction outputs
 */
 int blockchain_serialize(blockchain_t const *blockchain,
 						char const *path)
