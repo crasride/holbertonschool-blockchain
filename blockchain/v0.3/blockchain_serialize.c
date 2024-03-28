@@ -19,7 +19,7 @@ int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 		return (-1);
 
 	/* Open file */
-	fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	fd = open(path, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
 	if (fd == -1)
 		return (-1);
 
