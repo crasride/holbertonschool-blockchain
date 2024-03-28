@@ -47,17 +47,17 @@ void fwrite_transactions(llist_t *transactions, FILE *fp)
 }
 
 /**
- * header_init - Initialize the header_t struct
- * @header: Pointer to block_header struct
- */
+* header_init - Initialize the header_t struct
+* @header: Pointer to block_header struct
+*/
 
 void header_init(block_header_t *header)
 {
 	if (!header)
 		return;
 
-	memcpy(header->magic, "HBLK", 4);
-	memcpy(header->version, "0.3", 3);
+	strncpy(header->magic, HBLK_MAGIC, sizeof(header->magic));
+	strncpy(header->version, HBLK_VERSION, sizeof(header->version));
 	header->endian = _get_endianness();
 	header->blocks = 0;
 	header->unspent = 0;
