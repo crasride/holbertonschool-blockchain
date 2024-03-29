@@ -122,8 +122,7 @@ int blockchain_serialize(blockchain_t const *blockchain,
 		write(fd, &tx_size, 4);
 		write_transactions(block->transactions, fd);
 	}
-	/* Unspent tx output serialized contiguously too */
-	/* First one right after the last serialized Block */
+	/* Write the unspent transactions */
 	for (i = 0; i < header.unspent; i++)
 	{
 		unspent_node = llist_get_node_at(blockchain->unspent, i);
