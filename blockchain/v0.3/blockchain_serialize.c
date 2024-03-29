@@ -1,7 +1,5 @@
 #include "blockchain.h"
-#include "./provided/endianness.h"
 
-uint8_t _get_endianness(void);
 
 /**
 * write_transactions - serialize the transactions to the file descriptor "fd"
@@ -64,6 +62,8 @@ void write_transactions(llist_t *transactions, int fd)
 */
 void init_block_header(block_header_t *header)
 {
+	/* Get the endianness */
+	uint8_t _get_endianness(void);
 	/* Check if the header is NULL */
 	if (!header)
 		return;

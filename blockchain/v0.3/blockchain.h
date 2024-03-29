@@ -21,6 +21,7 @@
 
 #include "./transaction/transaction.h"
 #include "../../crypto/hblk_crypto.h"
+#include "./provided/endianness.h"
 
 /* Constants */
 #define BLOCKCHAIN_DATA_MAX 1024
