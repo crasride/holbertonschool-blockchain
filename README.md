@@ -298,9 +298,20 @@ In the UTXO (`Unspent Transaction Output`) model, transactions consume and creat
 
 </details>
 
-<h2 align="center"><a href=""> 👉 5. CLI</a></h2>
+<h2 align="center"><a href="https://github.com/crasride/holbertonschool-blockchain/tree/main/cli"> 👉 5. CLI</a></h2>
 
-* in progress
+<details>
+<summary>How to interact with the Blockchain library you previously created</summary>
+<br>
+
+</details>
+
+<details>
+<summary>How to maintain a transaction pool</summary>
+<br>
+
+</details>
+
 
 
 ## Author
