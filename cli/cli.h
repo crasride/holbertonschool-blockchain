@@ -15,4 +15,11 @@
 #include "../blockchain/v0.3/blockchain.h"
 #include "../blockchain/v0.3/transaction/transaction.h"
 
+/* Prototypes Functions */
+int handle_exit(void);
+int handle_wallet_create(EC_KEY **ec_key);
+int handle_wallet_save(EC_KEY *ec_key, char *path);
+int handle_wallet_load(EC_KEY **ec_key, char *path);
+
+
 #endif /* _CLI_H_ */

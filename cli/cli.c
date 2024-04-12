@@ -1,112 +1,145 @@
 #include "cli.h"
 
+
+/**
+* handle_exit - handle the exit command
+* Return: 1
+*/
+int handle_exit(void)
+{
+	printf("Exiting CLI\n");
+	return (1);
+}
+
+/**
+* handle_wallet_create - handle the wallet_create command
+* @ec_key: pointer to store EC key
+* Return: 0 if success, -1 if failed
+*/
+int handle_wallet_create(EC_KEY **ec_key)
+{
+	*ec_key = ec_create();
+	if (*ec_key)
+	{
+		printf("Create wallet (EC key)\n");
+		return (0);
+	}
+	else
+	{
+		printf("Failed to create EC key\n");
+		return (-1);
+	}
+}
+
+/**
+* handle_wallet_save - handle the wallet_save command
+* @ec_key: EC key
+* @path: path to save the key pair
+* Return: 0 if success, -1 if failed
+*/
+int handle_wallet_save(EC_KEY *ec_key, char *path)
+{
+	if (!ec_key)
+	{
+		printf("No EC key available\n");
+		return (-1);
+	}
+	if (ec_save(ec_key, path))
+	{
+		printf("Save wallet (EC key pair)\n");
+		return (0);
+	}
+	else
+	{
+		printf("Failed to save EC key\n");
+		return (-1);
+	}
+}
+
+/**
+* handle_wallet_load - handle the wallet_load command
+* @ec_key: pointer to store EC key
+* @path: path to load the key pair
+* Return: 0 if success, -1 if failed
+*/
+
+int handle_wallet_load(EC_KEY **ec_key, char *path)
+{
+	*ec_key = ec_load(path);
+
+	if (*ec_key)
+	{
+		printf("Load wallet (EC key pair)\n");
+		return (0);
+	}
+	else
+	{
+		printf("Failed to load EC key\n");
+		return (-1);
+		if (*ec_key)
+		EC_KEY_free(*ec_key);
+	}
+}
+
 /**
 * find_command - find the command to execute
 * @cmd: command
 * @arg1: argument 1
 * @arg2: argument 2
-* @ec_key: EC key
+* @ec_key: pointer to store EC key
 * Return: 0 if ok, 1 if exit
 */
 int find_command(char *cmd, char *arg1, char *arg2, EC_KEY **ec_key)
 {
 	if (strcmp(cmd, "exit") == 0)
 	{
-		return 1;
+		return (handle_exit());
 	}
 	else if (strcmp(cmd, "wallet_create") == 0)
 	{
-		*ec_key = ec_create();
-		if (*ec_key)
-			printf("Create wallet (EC key)\n");
-		else
-			printf("Failed to create EC key\n");
+		return (handle_wallet_create(ec_key));
 	}
 	else if (strcmp(cmd, "wallet_save") == 0)
 	{
 		if (!arg1)
+		{
 			printf("Usage: wallet_save <path>\n");
+			return (-1);
+		}
 		else
 		{
-			if (!*ec_key)
-				printf("No ec_key variable\n");
-			else
-			{
-				ec_save(*ec_key, arg1);
-				printf("Save wallet (EC key pair)\n");
-			}
+			return (handle_wallet_save(*ec_key, arg1));
 		}
 	}
 	else if (strcmp(cmd, "wallet_load") == 0)
 	{
 		if (!arg1)
+		{
 			printf("Usage: wallet_load <path>\n");
-		else
-		{
-			*ec_key = ec_load(arg1);
-			if (*ec_key)
-				printf("Load wallet (EC key pair)\n");
-			else
-				printf("Failed to load EC key\n");
-		}
-	}
-	else if (strcmp(cmd, "send") == 0)
-	{
-		if (!arg1 || !arg2)
-		{
-			printf("Usage: send <amount> <address>\n");
+			return (-1);
 		}
 		else
 		{
-			int amount = atoi(arg1);
-			char *address = arg2;
-			uint8_t pub[EC_PUB_LEN] = {0};
-			EC_KEY *receiver = ec_from_pub(pub);
-			transaction_t *tx = NULL;
-			llist_t *transaction_pool = NULL;
-
-			if (!receiver)
-			{
-				printf("Invalid receiver public key\n");
-				return 0;
-			}
-
-			transaction_pool = llist_create(0); /* O llist_add_node */
-			if (!transaction_pool)
-			{
-				printf("Failed to create transaction pool\n");
-				return 0;
-			}
-
-			tx = transaction_create(*ec_key, receiver, amount, transaction_pool);
-			if (tx)
-			{
-				if (transaction_is_valid(tx, llist_create(0)))
-				{
-					llist_add_node(transaction_pool, tx, ADD_NODE_REAR);
-					printf("Transaction successfully added to pool\n");
-				}
-				else
-				{
-					printf("Invalid transaction\n");
-					/* free_transaction(tx); */
-				}
-			}
-			else
-			{
-				printf("Failed to create transaction\n");
-			}
-			llist_destroy(transaction_pool, 1, (node_dtor_t)transaction_destroy);
+			return (handle_wallet_load(ec_key, arg1));
 		}
 	}
 	else
 	{
 		printf("unknown command: \"%s\"\n", cmd);
+		return (-1);
 	}
-
-	return 0;
+	(void)arg2;
 }
 
+/**
+* cleanup - free allocated memory before exiting
+* @ec_key: EC key pointer
+*/
+void cleanup(EC_KEY *ec_key)
+{
+	if (ec_key)
+		EC_KEY_free(ec_key);
+}
 
 
 /**
@@ -140,5 +173,7 @@ int main(void)
 	}
 	if (line)
 		free(line);
-	return (0);
+	cleanup(ec_key);
+
+	return (ret != 0);
 }
