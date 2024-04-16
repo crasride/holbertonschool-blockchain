@@ -34,6 +34,34 @@ int sum_unspent(void *node, unsigned int idx, void *arg)
 }
 
 /**
+*check_string - checks if a string is a valid hex string
+*@address: string to check
+*@pub: public key
+*@len: length of the string
+*Return: 1 if valid, 0 if not
+*/
+int check_string(char *address, uint8_t *pub, size_t len)
+{
+	size_t i;
+
+	for (i = 0; i < len; i++)
+	{
+		if (isdigit(address[i]))
+			continue;
+		else if (address[i] >= 'a' && address[i] <= 'f')
+			continue;
+		else if (address[i] >= 'A' && address[i] <= 'F')
+			address[i] = tolower(address[i]);
+		else
+		{
+			free(pub);
+			return (0);
+		}
+	}
+	return (1);
+}
+
+/**
 * string_to_pub - converts a EC_KEY public key in a lowercase or
 * uppercase hex string to a byte array
 *
@@ -45,7 +73,7 @@ uint8_t *string_to_pub(char *address)
 {
 	uint8_t *pub;
 	unsigned int scan;
-	size_t i, j, len, upper, case_detected;
+	size_t i, j, len;
 
 	if (!address)
 	{
@@ -64,47 +92,12 @@ uint8_t *string_to_pub(char *address)
 		free(pub);
 		return (NULL);
 	}
-
-	for (i = 0, case_detected = 0; i < len; i++)
-	{
-		if (isdigit(address[i]))
-			continue;
-		else if (address[i] >= 'a' && address[i] <= 'f')
-		{
-			if (!case_detected)
-			{
-				upper = 0;
-				case_detected = 1;
-			}
-			if (upper)
-			{
-				free(pub);
-				return (NULL);
-			}
-		}
-		else if (address[i] >= 'A' && address[i] <= 'F')
-		{
-			if (!case_detected)
-			{
-				upper = 1;
-				case_detected = 1;
-			}
-			if (!upper)
-			{
-				free(pub);
-				return (NULL);
-			}
-		}
-		else
-		{
-			free(pub);
-			return (NULL);
-		}
-	}
+	if (!check_string(address, pub, len))
+		return (NULL);
 
 	for (i = 0, j = 0; i < EC_PUB_LEN; i++, j += 2)
 	{
-		if (sscanf(address + j, upper ? "%02X" : "%02x", &scan) == -1)
+		if (sscanf(address + j, "%02x", &scan) == -1)
 		{
 			perror("string_to_pub: sscanf");
 			free(pub);

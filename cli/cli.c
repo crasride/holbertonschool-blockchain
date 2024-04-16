@@ -1,6 +1,7 @@
 #include "cli.h"
 
 
+
 /**
 * find_command - find the command to execute
 * @cmd: command
@@ -101,6 +102,23 @@ int find_command(char *cmd, char *arg1, char *arg2, state_t *state,
 	}
 }
 
+void print_logo(void)
+{
+	char *filename = "./logo.txt";
+	FILE *f = fopen(filename, "r");
+	char buffer[256];
+
+	if (f == NULL)
+	{
+		printf("Error: could not open file %s", filename);
+	}
+
+	while (fgets(buffer, 256, f))
+		printf("%s", buffer);
+
+	fclose(f);
+}
+
 /**
 * main - Entry point
 * Return: 0 if ok, 1 if failed
@@ -115,6 +133,7 @@ int main(void)
 	blockchain_t *blockchain = blockchain_create();
 	llist_t *tx_pool = llist_create(MT_SUPPORT_FALSE);
 
+	print_logo();
 	if (!blockchain)
 	{
 		fprintf(stderr, "Failed to create blockchain\n");
@@ -141,7 +160,7 @@ int main(void)
 
 	while (1)
 	{
-		printf("CLI prompt> ");
+		printf("Holbie blockchain> ");
 		read = getline(&line, &len, stdin);
 		if (read == -1)
 			break;

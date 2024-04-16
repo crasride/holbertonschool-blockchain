@@ -10,12 +10,16 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 #include "../crypto/hblk_crypto.h"
 #include "../blockchain/v0.3/blockchain.h"
 #include "../blockchain/v0.3/transaction/transaction.h"
 
 #define ADDRESS_MAX_LEN 42
+
 
 /**
 * struct state_s - client state structure
@@ -51,18 +55,20 @@ int handle_wallet_create(state_t *state);
 int handle_wallet_save(state_t *state, char *path);
 int handle_wallet_load(state_t *state, char *path);
 int handle_send(int amount, char *receiver_address, state_t *state);
-uint8_t *string_to_pub(char *address);
 int handle_info(state_t *state);
-void cleanup(state_t *state);
+int handle_load(state_t *state, char *path);
 int handle_save(state_t *state, char *path);
 int handle_mine(state_t *state);
 int invalid_tx(llist_node_t node, void *arg);
 int add_transaction(llist_node_t node, unsigned int idx, void *arg);
 int invalid_tx(llist_node_t node, void *arg);
-
-int handle_load(state_t *state, char *path);
 int sum_unspent(void *node, unsigned int idx, void *arg);
 int mine(state_t *state, block_t *block, block_t *prev_block,
 		transaction_t *coinbase_tx);
+void cleanup(state_t *state);
+uint8_t *string_to_pub(char *address);
+int str_to_key(char *str, EC_KEY **key);
+int find_command(char *cmd, char *arg1, char *arg2, state_t *state,
+					char *receiver_address);
 
 #endif /* _CLI_H_ */
