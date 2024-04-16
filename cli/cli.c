@@ -1,5 +1,9 @@
 #include "cli.h"
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 
 /**
@@ -125,8 +129,6 @@ void print_logo(void)
 */
 int main(void)
 {
-	ssize_t read;
-	size_t len;
 	int ret = 0;
 	char *line = NULL, *cmd, *arg1, *arg2, receiver_address[EC_PUB_LEN * 2];
 	state_t *state = NULL;
@@ -160,23 +162,26 @@ int main(void)
 
 	while (1)
 	{
-		printf("Holbie blockchain> ");
-		read = getline(&line, &len, stdin);
-		if (read == -1)
+		line = readline("Holbie blockchain> ");
+		if (!line)
 			break;
-		if (read <= 1)
-			continue;
-		line = strtok(line, "\n");
+
+		if (line[0] != '\0')
+		{
+			add_history(line);
+		}
+
 		cmd = strtok(line, " ");
 		arg1 = strtok(NULL, " ");
 		arg2 = strtok(NULL, " ");
-		/* remember to try with & for state */
+
 		ret = find_command(cmd, arg1, arg2, state, receiver_address);
 		if (ret == 1)
 			break;
-	}
-	if (line)
+
 		free(line);
+	}
+
 	cleanup(state);
 	return (ret != 0);
 }
