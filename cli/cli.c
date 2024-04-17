@@ -138,19 +138,19 @@ int main(void)
 	print_logo();
 	if (!blockchain)
 	{
-		fprintf(stderr, "Failed to create blockchain\n");
+		fprintf(stderr, "Error: Fallo al crear la cadena de bloques\n");
 		return (1);
 	}
 	if (!tx_pool)
 	{
-		fprintf(stderr, "Failed to create list transaction pool\n");
+		fprintf(stderr, "Error: Fallo al crear la lista de transacciones\n");
 		blockchain_destroy(blockchain);
 		return (1);
 	}
 	state = calloc(1, sizeof(state_t));
 	if (!state)
 	{
-		fprintf(stderr, "Failed to allocate memory for state\n");
+		fprintf(stderr, "Error: Fallo al asignar memoria para el estado\n");
 		blockchain_destroy(blockchain);
 		llist_destroy(tx_pool, 1, NULL);
 		return (1);
@@ -169,15 +169,14 @@ int main(void)
 		if (line[0] != '\0')
 		{
 			add_history(line);
+			cmd = strtok(line, " ");
+			arg1 = strtok(NULL, " ");
+			arg2 = strtok(NULL, " ");
+
+			ret = find_command(cmd, arg1, arg2, state, receiver_address);
+			if (ret == 1)
+				break;
 		}
-
-		cmd = strtok(line, " ");
-		arg1 = strtok(NULL, " ");
-		arg2 = strtok(NULL, " ");
-
-		ret = find_command(cmd, arg1, arg2, state, receiver_address);
-		if (ret == 1)
-			break;
 
 		free(line);
 	}
@@ -185,3 +184,4 @@ int main(void)
 	cleanup(state);
 	return (ret != 0);
 }
+
