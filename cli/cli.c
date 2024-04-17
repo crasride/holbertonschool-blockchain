@@ -1,10 +1,4 @@
 #include "cli.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-
 
 /**
 * find_command - find the command to execute

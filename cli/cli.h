@@ -18,6 +18,9 @@
 #include "../blockchain/v0.3/blockchain.h"
 #include "../blockchain/v0.3/transaction/transaction.h"
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
 #define ADDRESS_MAX_LEN 42
 
 
