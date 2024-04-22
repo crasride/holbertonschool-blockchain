@@ -3,9 +3,7 @@
 /**
 * handle_mine - mine a block
 * @state: cli state
-* Return: 2 if number of arguments are wrong,
-*         EXIT_FAILURE if call to a function fails
-*         EXIT_SUCCESS otherwise
+* Return: 0 if ok 1 if fail
 */
 int handle_mine(state_t *state)
 {
