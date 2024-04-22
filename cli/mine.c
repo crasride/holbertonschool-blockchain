@@ -44,7 +44,7 @@ int mine(state_t *state, block_t *block, block_t *prev_block,
 		transaction_t *coinbase_tx)
 {
 	int size, i;
-	unspent_tx_out_t *utxo = NULL;
+	/* unspent_tx_out_t *utxo = NULL; */
 
 	size = llist_size(state->tx_pool);
 	for (i = 0; i < size; i++)
@@ -62,10 +62,11 @@ int mine(state_t *state, block_t *block, block_t *prev_block,
 			;
 		transaction_destroy(coinbase_tx);
 		block_destroy(block);
-		return ((state->status = EXIT_FAILURE));
+		return (-1);
 	}
-	state->blockchain->unspent = update_unspent(state->tx_pool,
+	state->blockchain->unspent = update_unspent(block->transactions,
 					block->hash, state->blockchain->unspent);
+	/*
 	utxo = unspent_tx_out_create(block->hash, coinbase_tx->id,
 				llist_get_head(coinbase_tx->outputs));
 	if (!utxo)
@@ -75,12 +76,13 @@ int mine(state_t *state, block_t *block, block_t *prev_block,
 			;
 		transaction_destroy(coinbase_tx);
 		block_destroy(block);
-		return ((state->status = EXIT_FAILURE));
+		return (-1);
 	}
+	*/
 	while (llist_pop(state->tx_pool))
 		;
 	llist_add_node(state->blockchain->chain, block, ADD_NODE_REAR);
-	llist_add_node(state->blockchain->unspent, utxo, ADD_NODE_REAR);
+	/* llist_add_node(state->blockchain->unspent, utxo, ADD_NODE_REAR); */
 	fprintf(stdout, "Block Successfuly mined\n");
-	return ((state->status = EXIT_SUCCESS));
+	return (0);
 }
